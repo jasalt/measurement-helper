@@ -13,6 +13,7 @@ from flask.ext.bootstrap import Bootstrap
 login_manager = LoginManager()
 
 app = Flask(__name__)
+app.config["SECRET_KEY"] = "ITSASECRET"
 Bootstrap(app)
 
 # LoginManager.init_app(app)
@@ -29,8 +30,8 @@ def load_user(userid):
 
 
 class LoginForm(Form):
-    name = StringField('name', validators=[DataRequired()])
-    password = PasswordField()
+    name = StringField('Käyttäjätunnus', validators=[DataRequired()])
+    password = PasswordField('Salasana', validators=[DataRequired()])
     submit = SubmitField('Kirjaudu')
 
 
