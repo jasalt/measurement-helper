@@ -1,22 +1,14 @@
-from flask import Flask, redirect, render_template, flash, request, url_for
+# User authentication specific code
 
+from flask import Blueprint, render_template, flash, request, redirect, url_for
 from flask_wtf import Form
 from wtforms import StringField, PasswordField, SubmitField
+from flask.ext.login import LoginManager, login_user
 from wtforms.validators import DataRequired
 
-from flask.ext.login import LoginManager, login_user
-
-from flask.ext.bootstrap import Bootstrap
-
-
+mod = Blueprint('authentication', __name__)
 
 login_manager = LoginManager()
-
-app = Flask(__name__)
-app.config["SECRET_KEY"] = "ITSASECRET"
-Bootstrap(app)
-
-# LoginManager.init_app(app)
 
 
 @login_manager.user_loader
@@ -35,7 +27,7 @@ class LoginForm(Form):
     submit = SubmitField('Kirjaudu')
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@mod.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     # TODO set wtform
@@ -49,14 +41,3 @@ def login():
         return redirect(next or url_for('index'))
     # TODO setup login page template
     return render_template('login.html', form=form)
-
-
-@app.route("/", methods=["GET"])
-def index():
-    return render_template("index.html", name="jouko")
-
-
-@app.route("/protected/", methods=["GET"])
-# @login_required
-def protected():
-    return "Hello, protected!", 200

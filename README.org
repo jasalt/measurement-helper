@@ -16,3 +16,12 @@ pip install -r requirements.txt
 Pip may throw permission error about ~/.cache/pip/ when installing. Fix by running:
 
 sudo chown -R USERNAME:USERNAME $HOME/.cache/pip
+
+** Running development server with debugger and auto reloader
+
+    python server.py dev
+
+Defaults to localhost:5000. Changing host and port for exposing server for 
+external requests (might be dangerous if debugger is enabled):
+
+    python server.py dev -h 0.0.0.0 -p 80
