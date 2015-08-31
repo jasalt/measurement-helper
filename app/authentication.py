@@ -3,24 +3,37 @@ from flask import Blueprint, render_template, flash, request, redirect, \
     url_for
 from flask_wtf import Form
 from wtforms import PasswordField, SubmitField
-from flask.ext.login import LoginManager, login_user
+from flask.ext.login import LoginManager, login_user, UserMixin
 from wtforms.validators import DataRequired, AnyOf
 
-mod = Blueprint('authentication', __name__)
+from secret import auth_keys, mail_addresses
 
-from secret import auth_keys
+mod = Blueprint('authentication', __name__)
 
 login_manager = LoginManager()
 
 
+class User(UserMixin):
+    # http://gouthamanbalaraman.com/blog/minimal-flask-login-example.html
+    # https://flask-login.readthedocs.org/en/latest/#your-user-class
+
+    # TODO
+    # id = db.Column(db.Integer, primary_key=True)
+    # username = db.Column(db.String(80), unique=True)
+    # email = db.Column(db.String(120), unique=True)
+
+    def __init__(self, id):
+        self.id = id
+        self.emails = mail_addresses
+
+    @classmethod
+    def get(cls, id):
+        return User(id)
+
+
 @login_manager.user_loader
-def load_user(userid):
-    # TODO load user from DB
-    if userid == "test":
-        return {'username': 'tester',
-                'email': 'test@example.net'}
-    else:
-        return None
+def load_user(id):
+    return User(id)
 
 
 class LoginForm(Form):
@@ -34,14 +47,12 @@ class LoginForm(Form):
 @mod.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    # TODO set wtform
     if form.validate_on_submit():
-        # login_user(user)
+        login_user(User(1), remember=True, force=True)
         flash("Kirjautuminen onnistui!")
         next = request.args.get('next')
         # if not next_is_valid(next):
         #     return flash.abort(400)
-
-        return redirect(next or url_for('index'))
+        return redirect(next or url_for('measurements.dashboard'))
     # TODO setup login page template
     return render_template('login.html', form=form)
