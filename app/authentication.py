@@ -1,12 +1,14 @@
 # User authentication specific code
-
-from flask import Blueprint, render_template, flash, request, redirect, url_for
+from flask import Blueprint, render_template, flash, request, redirect, \
+    url_for
 from flask_wtf import Form
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import PasswordField, SubmitField
 from flask.ext.login import LoginManager, login_user
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, AnyOf
 
 mod = Blueprint('authentication', __name__)
+
+from secret import auth_keys
 
 login_manager = LoginManager()
 
@@ -22,8 +24,10 @@ def load_user(userid):
 
 
 class LoginForm(Form):
-    name = StringField('Käyttäjätunnus', validators=[DataRequired()])
-    password = PasswordField('Salasana', validators=[DataRequired()])
+    password = PasswordField('Salasana',
+                             validators=[DataRequired(),
+                                         AnyOf(auth_keys,
+                                               'Salasana on väärä!')])
     submit = SubmitField('Kirjaudu')
 
 
@@ -33,7 +37,7 @@ def login():
     # TODO set wtform
     if form.validate_on_submit():
         # login_user(user)
-        flash("Logged in successfully")
+        flash("Kirjautuminen onnistui!")
         next = request.args.get('next')
         # if not next_is_valid(next):
         #     return flash.abort(400)
