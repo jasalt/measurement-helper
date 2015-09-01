@@ -9,7 +9,7 @@ import measurements
 
 
 app = Flask(__name__)
-
+app.jinja_env.line_statement_prefix = '#'
 Bootstrap(app)
 
 app.config["SECRET_KEY"] = "ITSASECRET"

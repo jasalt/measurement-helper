@@ -1,13 +1,12 @@
-{% extends "base.html" %}
+# extends "base.html"
 
-{% block page_content %}
-  {% if current_user.is_authenticated() %}
-    <p>Logged in..</p>
-    
-  {% else %}
-    
-    <a class="btn btn-primary btn-lg"
-       href="{{ url_for('authentication.login')}}">Kirjaudu sisään</a>
-       
-  {% endif %}
-{% endblock %}
+# block page_content
+# if current_user.is_authenticated()
+<p>Logged in..</p>
+
+# else
+<a class="btn btn-primary btn-lg"
+   href="{{ url_for('authentication.login')}}">Kirjaudu sisään</a>
+
+# endif
+# endblock
