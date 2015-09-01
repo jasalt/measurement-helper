@@ -1,12 +1,11 @@
-# extends "base.html"
-# import "bootstrap/wtf.html" as wtf
+% extends "base.html"
+% import "bootstrap/wtf.html" as wtf
 
-# block content
-
+% block content
 <div class="container">
   <div class="page-header">
-    # wtf.quick_form(form)
+    {{wtf.quick_form(form)}}
   </div>
 </div>
+% endblock
 
-# endblock
