@@ -9,6 +9,7 @@ import measurements
 
 
 app = Flask(__name__)
+app.jinja_env.line_statement_prefix = '%'
 
 Bootstrap(app)
 
@@ -19,10 +20,6 @@ authentication.login_manager.init_app(app)
 
 app.register_blueprint(measurements.mod)
 
-
-@app.route("/", methods=["GET"])
-def index():
-    return render_template('index.html')
 
 manager = Manager(app)
 manager.add_command("dev", Server(host="localhost", port=5000,
