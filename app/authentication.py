@@ -22,8 +22,8 @@ class User(UserMixin):
     # username = db.Column(db.String(80), unique=True)
     # email = db.Column(db.String(120), unique=True)
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self):
+        self.id = "no-one"
         self.emails = mail_addresses
 
     @classmethod
@@ -33,7 +33,8 @@ class User(UserMixin):
 
 @login_manager.user_loader
 def load_user(id):
-    return User(id)
+    # ID is ignored, using single user authentication
+    return User()
 
 
 class LoginForm(Form):
@@ -48,11 +49,9 @@ class LoginForm(Form):
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        login_user(User(1), remember=True, force=True)
+        login_user(User(), remember=True, force=True)
         flash("Kirjautuminen onnistui!")
         next = request.args.get('next')
-        # if not next_is_valid(next):
-        #     return flash.abort(400)
+        # note: next should be validated for security purposes!
         return redirect(next or url_for('measurements.dashboard'))
-    # TODO setup login page template
     return render_template('login.html', form=form)
