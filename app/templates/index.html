@@ -12,10 +12,10 @@
 </div>
 % endfor
 
-
 % if current_user.is_authenticated()
+
+<h3>Uusi mittaus</h3>
 <div class="well well-sm">
-  <h3>Uusi mittaus</h3>
   {{wtf.quick_form(form)}}
 </div>
 

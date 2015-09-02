@@ -9,7 +9,11 @@
     </tr>
     % for entry in entries
     <tr>
-      <td><a href="{{ url_for('measurements.edit', id=entry.id) }}"> {{entry.type}}</a></td>
+      <td><a href="{{ url_for('measurements.edit', id=entry.id) }}"> {{entry.type}}</a>
+        % if entry.comment
+        <p>Kommentti: <em>"{{entry.comment}}"</em></p>
+        % endif
+      </td>
       <td>{{entry.date}}</td>
       <td>{{entry.value}}</td>
     </tr>
