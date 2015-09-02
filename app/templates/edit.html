@@ -1,0 +1,13 @@
+% extends "base.html"
+% import "bootstrap/wtf.html" as wtf
+
+% block page_content
+
+<div class="page-header">
+  <h1>Muokkaa merkintää</h1>
+  {{wtf.quick_form(form)}}
+  <br/>
+  <a class="btn btn-danger" href="{{url_for('measurements.delete', id=entry.id)}}">Poista</a>
+</div>
+
+% endblock

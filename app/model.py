@@ -24,17 +24,33 @@ entry_model = \
               "Ferrosulfaatin määrän lisäys kiloina."}}
 
 
-def connect_db():
-    return dataset.connect('sqlite:///measurements.db', row_type=stuf)
+def get_table():
+    db = dataset.connect('sqlite:///measurements.db', row_type=stuf)
+    return db['measurements']
 
 
 def add_measurement(data):
-    db = connect_db()
-    table = db['measurements']
-    table.insert(data)
+    measurements = get_table()
+    measurements.insert(data)
 
 
 def read_measurements():
-    db = connect_db()
-    measurements = db['measurements'].all()
-    return measurements
+    measurements = get_table()
+    return measurements.all()
+
+
+def get_measurement(id):
+    measurements = get_table()
+    return measurements.find_one(id=id)
+
+
+def update_measurement(data):
+    '''Update entry by id.'''
+    measurements = get_table()
+    measurements.update(data, ['id'])
+
+
+def delete_measurement(id):
+    measurements = get_table()
+    import ipdb; ipdb.set_trace()
+    return 0

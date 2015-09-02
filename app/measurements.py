@@ -12,7 +12,8 @@ from wtforms.validators import DataRequired, NumberRange
 from datetime import date
 from toolz import dissoc
 
-from model import entry_model, add_measurement, read_measurements
+from model import entry_model, add_measurement, read_measurements, \
+    delete_measurement, get_measurement
 
 mod = Blueprint('measurements', __name__)
 
@@ -30,7 +31,7 @@ def value_validation(form, field):
                value_model['max']))
 
 
-class AddForm(Form):
+class MeasurementForm(Form):
     entry_choises = [(k, v['finnish']) for k, v in entry_model.items()]
     sorted_choises = sorted(entry_choises, key=lambda tuple: tuple[1])
 
@@ -42,24 +43,49 @@ class AddForm(Form):
     submit = SubmitField('Lähetä')
 
 
-@mod.route('/show')
-@login_required
-def show_measurements():
-    return "This is the history"
-
-
 # TODO route to login if not logged in
 @mod.route('/', methods=['GET', 'POST'])
 @login_required
 def dashboard():
+    '''Default view with box for adding measurements and list of five last
+    entries.'''
     # request.form.last_added
-    data = read_measurements()
-    form = AddForm()
+    data = read_measurements() or None
+    ## take 5 from data based on last dates
+    form = MeasurementForm()
     if request.method == 'POST' and form.validate():
         add_measurement(dissoc(form.data, 'submit'))
         return redirect(url_for('measurements.dashboard'))
 
     return render_template('index.html', form=form, measurements=data)
 
-# Default to dashboard view with 10 last measurements and addition box
-#
+
+@mod.route('/edit/<id>', methods=['GET', 'POST'])
+@login_required
+def edit(id):
+    form = MeasurementForm()
+    entry = get_measurement(id)
+    if request.method == 'POST' and form.validate():
+        add_measurement(dissoc(form.data, 'submit'))
+        return redirect(url_for('measurements.dashboard'))
+
+    return render_template('edit.html', form=form, entry=entry)
+
+
+@mod.route('/history')
+@login_required
+def history():
+    '''List all measurements from db'''
+    data = read_measurements()
+    if not data:
+        flash("Tietokanta on tyhjä.")
+        return redirect(url_for('measurements.dashboard'))
+    return "History view" ##TODO
+
+
+@mod.route('/delete/<id>')
+@login_required
+def delete(id):
+    delete_measurement(id)
+    flash("Merkintä poistettu.")
+    return redirect(url_for('measurements.dashboard'))
