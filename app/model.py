@@ -53,5 +53,5 @@ def update_measurement(data):
 
 def delete_measurement(id):
     measurements = get_table()
-    import ipdb; ipdb.set_trace()
-    return 0
+    print("DELETE " + str(id))
+    measurements.delete(id=id)
