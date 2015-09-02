@@ -3,9 +3,8 @@
 
 % block content
 
-<img src="{{ url_for('static', filename = 'lock.png') }}"/>
-
 <div class="container">
+  <img class="center-block" src="{{ url_for('static', filename = 'lock.png') }}"/>
   <div class="page-header">
     {{wtf.quick_form(form)}}
   </div>
