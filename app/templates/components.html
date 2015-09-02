@@ -9,14 +9,20 @@
     </tr>
     % for entry in entries
     <tr>
-      <td><a href="{{ url_for('measurements.edit', id=entry.id) }}"> {{entry.type}}</a>
+      <td>
+        <a href="{{ url_for('measurements.edit', id=entry.id) }}">
+          <h4>{{g.entry_model[entry.type]['finnish']}}</h4></a>
         % if entry.comment
-        <p>Kommentti: <em>"{{entry.comment}}"</em></p>
+        <p>Kommentti: <em>"{{entry.comment}}"</em</p>      
+
         % endif
+
       </td>
       <td>{{entry.date}}</td>
       <td>{{entry.value}}</td>
     </tr>
+
+
     % endfor
   </table>
 </div>

@@ -52,6 +52,7 @@ def dashboard():
     entries.'''
     # request.form.last_added
     data = read_measurements() or None
+    g.entry_model = entry_model
     ## take 5 from data based on last dates
     form = MeasurementForm()
     if request.method == 'POST' and form.validate():
@@ -68,7 +69,7 @@ def edit(id):
     print("Editing ID " + id)
     entry = get_measurement(id)
     g.entryid = entry.id
-
+    
     # HACK worked around csrf missing problem
     form = MeasurementForm(csrf_enabled=False)
 
@@ -97,6 +98,8 @@ def edit(id):
 def history():
     '''List all measurements from db'''
     data = read_measurements()
+    g.entry_model = entry_model
+
     if not data:
         flash("Tietokanta on tyhjä!")
         return redirect(url_for('measurements.dashboard'))
