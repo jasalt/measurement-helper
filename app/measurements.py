@@ -11,10 +11,10 @@ from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, NumberRange
 from datetime import date
 from time import strptime, mktime
-from toolz import dissoc
+from toolz import assoc, dissoc, thread_first
 
 from model import entry_model, add_measurement, read_measurements, \
-    delete_measurement, get_measurement
+    delete_measurement, get_measurement, update_measurement
 
 mod = Blueprint('measurements', __name__)
 
@@ -68,7 +68,14 @@ def edit(id):
     entry = get_measurement(id)
     g.entryid = entry.id
 
-    form = MeasurementForm()
+    # HACK worked around csrf missing problem
+    form = MeasurementForm(csrf_enabled=False)
+
+    if request.method == 'POST' and form.validate():
+        entry = dissoc(form.data, 'submit')
+        entry['id'] = int(id)
+        update_measurement(entry)
+        return redirect(url_for('measurements.dashboard'))
 
     # Change default values
     form.type.default = entry.type
@@ -80,11 +87,6 @@ def edit(id):
     form.date.default = d
 
     form.process()
-
-    if request.method == 'POST' and form.validate():
-        add_measurement(dissoc(form.data, 'submit'))
-        return redirect(url_for('measurements.dashboard'))
-
     return render_template('edit.html', form=form)
 
 

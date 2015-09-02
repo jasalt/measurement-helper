@@ -47,6 +47,7 @@ def get_measurement(id):
 def update_measurement(data):
     '''Update entry by id.'''
     measurements = get_table()
+    print(data)
     measurements.update(data, ['id'])
 
 
