@@ -28,7 +28,8 @@ external requests (might be dangerous if debugger is enabled):
 
 ** To Do
 - [X] +User auth by env token, [[http://flask-sqlalchemy.pocoo.org/2.0/quickstart/][flask-login]]
-- [ ] [[https://dataset.readthedocs.org/en/latest/][Dataset]] and sqlite
-- [ ] Views
-- [ ] [[https://github.com/lepture/flask-wtf][WTForms]] classes & validation for entries
+- [X] [[https://dataset.readthedocs.org/en/latest/][Dataset]] and sqlite
+- [X] Views
+- [X] [[https://github.com/lepture/flask-wtf][WTForms]] classes & validation for entries
+- [ ] Logout
 - [ ] Cron script for [[http://pythonhosted.org/Flask-Mail/][flask-mail]] notifications
