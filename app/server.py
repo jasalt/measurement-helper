@@ -24,6 +24,9 @@ app.register_blueprint(measurements.mod)
 manager = Manager(app)
 manager.add_command("dev", Server(host="localhost", port=5000,
                                   use_debugger=True, use_reloader=True))
+manager = Manager(app)
+manager.add_command("run", Server(host="0.0.0.0", port=5001,
+                                  use_debugger=False, use_reloader=True))
 
 if __name__ == '__main__':
     manager.run()
