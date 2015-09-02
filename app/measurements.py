@@ -1,7 +1,7 @@
 # CRUD operations for measurements.
 
 from flask import Blueprint, render_template, flash, request, redirect, \
-    url_for, current_app
+    url_for, current_app, g
 from flask_wtf import Form
 from flask.ext.login import login_required
 
@@ -10,6 +10,7 @@ from wtforms import TextField, SubmitField, SelectField, ValidationError, \
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, NumberRange
 from datetime import date
+from time import strptime, mktime
 from toolz import dissoc
 
 from model import entry_model, add_measurement, read_measurements, \
@@ -63,13 +64,28 @@ def dashboard():
 @mod.route('/edit/<id>', methods=['GET', 'POST'])
 @login_required
 def edit(id):
-    form = MeasurementForm()
+    print("Editing ID " + id)
     entry = get_measurement(id)
+    g.entryid = entry.id
+
+    form = MeasurementForm()
+
+    # Change default values
+    form.type.default = entry.type
+    form.comment.default = entry.comment
+    form.value.default = entry.value
+
+    st = strptime(entry.date, "%Y-%m-%d")
+    d = date.fromtimestamp(mktime(st))
+    form.date.default = d
+
+    form.process()
+
     if request.method == 'POST' and form.validate():
         add_measurement(dissoc(form.data, 'submit'))
         return redirect(url_for('measurements.dashboard'))
 
-    return render_template('edit.html', form=form, entry=entry)
+    return render_template('edit.html', form=form)
 
 
 @mod.route('/history')

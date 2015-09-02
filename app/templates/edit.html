@@ -7,7 +7,7 @@
   <h1>Muokkaa merkintää</h1>
   {{wtf.quick_form(form)}}
   <br/>
-  <a class="btn btn-danger" href="{{url_for('measurements.delete', id=entry.id)}}">Poista</a>
+  <a class="btn btn-danger" href="{{url_for('measurements.delete', id=g.entryid)}}">Poista</a>
 </div>
 
 % endblock
