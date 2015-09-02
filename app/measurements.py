@@ -10,6 +10,8 @@ from wtforms import TextField, SubmitField, SelectField, ValidationError, \
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, NumberRange
 
+from model import entry_types
+
 mod = Blueprint('measurements', __name__)
 
 
@@ -25,8 +27,11 @@ def value_validation(form, field):
 
 # TODO https://pypi.python.org/pypi/wtforms-html5
 class AddForm(Form):
-    type = SelectField("Mittaustyyppi", choices=[('typeA', 'Typpi A'),
-                                                 ('typeB', 'Tyyppi B')])
+    # Build choises from model.entry_types
+    entry_choises = [(k, v['finnish']) for k, v in entry_types.items()]
+    sorted_choises = sorted(entry_choises, key=lambda tuple:
+                            tuple[1])
+    type = SelectField("Mittaustyyppi", choices=sorted_choises)
     date = DateField('Päiväys')  # TODO default to today, tidy formatting
     value = IntegerField('Mittausarvo', validators=[DataRequired(),
                                                     value_validation])
