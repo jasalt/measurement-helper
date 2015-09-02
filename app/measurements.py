@@ -1,17 +1,17 @@
 # CRUD operations for measurements.
 
 from flask import Blueprint, render_template, flash, request, redirect, \
-    url_for, current_app, g
+    url_for, g
 from flask_wtf import Form
 from flask.ext.login import login_required
 
 from wtforms import TextField, SubmitField, SelectField, ValidationError, \
     IntegerField
 from wtforms.fields.html5 import DateField
-from wtforms.validators import DataRequired, NumberRange
+from wtforms.validators import DataRequired
 from datetime import date
 from time import strptime, mktime
-from toolz import assoc, dissoc, thread_first, take
+from toolz import dissoc, take
 
 from model import entry_model, add_measurement, read_measurements, \
     delete_measurement, get_measurement, update_measurement
