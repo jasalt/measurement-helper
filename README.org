@@ -31,5 +31,4 @@ external requests (might be dangerous if debugger is enabled):
 - [X] [[https://dataset.readthedocs.org/en/latest/][Dataset]] and sqlite
 - [X] Views
 - [X] [[https://github.com/lepture/flask-wtf][WTForms]] classes & validation for entries
-- [ ] Logout
 - [ ] Cron script for [[http://pythonhosted.org/Flask-Mail/][flask-mail]] notifications

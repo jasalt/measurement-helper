@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, flash, request, redirect, \
     url_for
 from flask_wtf import Form
 from wtforms import PasswordField, SubmitField
-from flask.ext.login import LoginManager, login_user, UserMixin
+from flask.ext.login import LoginManager, login_user, UserMixin, logout_user
 from wtforms.validators import DataRequired, AnyOf
 
 from secret import auth_keys, mail_addresses
@@ -55,3 +55,9 @@ def login():
         # note: next should be validated for security purposes!
         return redirect(next or url_for('measurements.dashboard'))
     return render_template('login.html', form=form)
+
+
+@mod.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('authentication.login'))
