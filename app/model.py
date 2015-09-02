@@ -1,5 +1,5 @@
 import dataset
-from stuf import stuf
+from operator import itemgetter
 
 entry_model = \
             {"silt_active_ml_per_l":
@@ -25,7 +25,7 @@ entry_model = \
 
 
 def get_table():
-    db = dataset.connect('sqlite:///measurements.db', row_type=stuf)
+    db = dataset.connect('sqlite:///measurements.db', row_type=dict)
     return db['measurements']
 
 
@@ -35,8 +35,12 @@ def add_measurement(data):
 
 
 def read_measurements():
+    '''Return all measurements from db. Sorted primarily by date, secondarily
+    by id.'''
     measurements = get_table()
-    return measurements.all()
+    all = [a for a in measurements.all()]
+    all_sorted = sorted(all, key=itemgetter('date', 'id'), reverse=True)
+    return all_sorted
 
 
 def get_measurement(id):
