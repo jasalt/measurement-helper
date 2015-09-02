@@ -1,5 +1,6 @@
 % extends "base.html"
 % import "bootstrap/wtf.html" as wtf
+% import "components.html" as components
 
 % block page_content
 
@@ -17,19 +18,7 @@
   {{wtf.quick_form(form)}}
 </div>
 
-<div>
-  <ul>
-    % for entry in measurements
-
-    <li>
-      <a href="{{ url_for('measurements.edit', id=entry.id) }}">
-        {{entry}}
-      </a>
-    </li>
-
-    % endfor
-  </ul>
-</div>
+{{ components.entry_list(measurements) }}
 
 % else
 

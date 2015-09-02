@@ -1,0 +1,15 @@
+{% macro entry_list(entries) -%}
+
+<div>
+  <ul>
+    {% for entry in entries %}
+    <li>
+      <a href="{{ url_for('measurements.edit', id=entry.id) }}">
+        {{entry}}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% endmacro %}
