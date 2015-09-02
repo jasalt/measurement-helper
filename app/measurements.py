@@ -68,7 +68,7 @@ def dashboard():
 def edit(id):
     print("Editing ID " + id)
     entry = get_measurement(id)
-    g.entryid = entry.id
+    g.entryid = entry['id']
 
     # HACK worked around csrf missing problem
     form = MeasurementForm(csrf_enabled=False)
@@ -81,11 +81,11 @@ def edit(id):
         return redirect(url_for('measurements.dashboard'))
 
     # Change default values
-    form.type.default = entry.type
-    form.comment.default = entry.comment
-    form.value.default = entry.value
+    form.type.default = entry['type']
+    form.comment.default = entry['comment']
+    form.value.default = entry['value']
 
-    st = strptime(entry.date, "%Y-%m-%d")
+    st = strptime(entry['date'], "%Y-%m-%d")
     d = date.fromtimestamp(mktime(st))
     form.date.default = d
 
