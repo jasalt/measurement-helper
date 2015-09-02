@@ -80,7 +80,7 @@ def history():
     if not data:
         flash("Tietokanta on tyhjä.")
         return redirect(url_for('measurements.dashboard'))
-    return "History view" ##TODO
+    return render_template('history.html', measurements=data)
 
 
 @mod.route('/delete/<id>')

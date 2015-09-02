@@ -4,6 +4,7 @@
 
 % block page_content
 
+
 % for message in get_flashed_messages()
 <div class="alert alert-warning">
   <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -11,19 +12,22 @@
 </div>
 % endfor
 
-% if current_user.is_authenticated()
 
+% if current_user.is_authenticated()
 <div class="well well-sm">
   <h3>Uusi mittaus</h3>
   {{wtf.quick_form(form)}}
 </div>
 
-{{ components.entry_list(measurements) }}
+<div>
+  {{ components.entry_list(measurements) }}
+  <a class="btn btn-block btn-default" href="{{url_for('measurements.history')}}">Näytä lisää</a>
+</div>
+
 
 % else
-
 <a class="btn btn-primary btn-lg"
    href="{{ url_for('authentication.login')}}">Kirjaudu sisään</a>
-
 % endif
+
 % endblock
