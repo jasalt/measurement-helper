@@ -9,30 +9,32 @@ from wtforms import TextField, SubmitField, SelectField, ValidationError, \
     IntegerField
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, NumberRange
+from datetime import date
 
-from model import entry_types
+from model import entry_model
 
 mod = Blueprint('measurements', __name__)
 
 
 def value_validation(form, field):
-    import ipdb; ipdb.set_trace()
-    # Validate that field.data corresponds to value range of form.data['type']
-    # defined in model
+    ''' Validates that field.data corresponds to value range of form.data['type']
+    defined in model. Builds error message accordingly.'''
+    value = field.data
+    value_model = entry_model[form.data['type']]
+    if value > value_model['max'] or value < value_model['min']:
+        raise ValidationError(
+            "Virheellinen arvo. Syötä %s väliltä %d - %d."
+            % (value_model['description'],
+               value_model['min'],
+               value_model['max']))
 
-    if (field.data < 100):
-        print("ValidationFail")
-        raise ValidationError("Less than 100")
 
-
-# TODO https://pypi.python.org/pypi/wtforms-html5
 class AddForm(Form):
-    # Build choises from model.entry_types
-    entry_choises = [(k, v['finnish']) for k, v in entry_types.items()]
-    sorted_choises = sorted(entry_choises, key=lambda tuple:
-                            tuple[1])
+    entry_choises = [(k, v['finnish']) for k, v in entry_model.items()]
+    sorted_choises = sorted(entry_choises, key=lambda tuple: tuple[1])
+
     type = SelectField("Mittaustyyppi", choices=sorted_choises)
-    date = DateField('Päiväys')  # TODO default to today, tidy formatting
+    date = DateField('Päiväys (muotoa. 12-20-2015)', default=date.today())
     value = IntegerField('Mittausarvo', validators=[DataRequired(),
                                                     value_validation])
     comment = TextField('Valinnainen kommentti')
@@ -51,6 +53,7 @@ def add_measurement():
     return "Should show form for adding new stuff."
 
 
+# TODO route to login if not logged in
 @mod.route('/', methods=['GET', 'POST'])
 @login_required
 def dashboard():

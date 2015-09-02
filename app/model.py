@@ -1,26 +1,21 @@
-entry_types = \
+entry_model = \
             {"silt_active_ml_per_l":
-             {"finnish": "Aktiivilietemittaus", "max": 0, "min": 1000,
-              "input-type":  "numeric", "unit": "ml per litra",
-              "description": "Aktiivilietteen mittaus"},
+             {"finnish": "Aktiivilietemittaus", "min": 0, "max": 1000,
+              "description": "aktiivilietteen mittaus (ml per litra)"},
              "silt_surplus_removal_l":
-             {"finnish": "Poistopumppaus", "max": 1, "min": 1000,
-              "input-type":  "numeric", "unit": "litraa",
-              "description": "Ylijäämälietteen poistomäärä litroina."},
+             {"finnish": "Poistopumppaus", "min": 1, "max": 1000,
+              "description": "ylijäämälietteen poistomäärä litroina"},
              "pump_usage_hours":
-             {"finnish": "Pumpun käyttötunnit", "max": 1, "min": 9999999,
-              "input-type": "numeric", "unit": "tuntia",
-              "description": "Pumpun käyttötuntilaskurin lukema"},
+             {"finnish": "Pumpun käyttötunnit", "min": 1, "max": 9999999,
+              "description": "pumpun käyttötuntilaskurin lukema"},
              "water_quality":
-             {"finnish": "Kirkasvesinäyte", "max": 1, "min": 3,
-              "input-type": "numeric", "unit": "1-3",
+             {"finnish": "Kirkasvesinäyte", "min": 1, "max": 5,
               "description":
-              "Kirkasveden laatu asteikolla 1-3 (1 on parhain)"},
+              "kirkasveden laatu asteikolla 1-5 (1 on parhain)"},
              "ferrosulphate_level_percent":
-             {"finnish": "Ferrosulfaatin määrä", "max": 0, "min": 100,
-              "input-type":  "numeric", "unit": "prosenttiluku",
-              "description": "Ferrosulfaattimittarin prosenttilukema"},
+             {"finnish": "Ferrosulfaatin määrä", "min": 0, "max": 100,
+              "description": "ferrosulfaattimittarin prosenttilukema"},
              "ferrosulphate_addition_kg":
-             {"finnish": "Ferrosulfaatin lisäys", "max": 1, "min": 1000,
-              "input-type":  "numeric", "unit": "kiloa", "description":
+             {"finnish": "Ferrosulfaatin lisäys", "min": 1, "max": 1000,
+              "description":
               "Ferrosulfaatin määrän lisäys kiloina."}}
