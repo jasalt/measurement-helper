@@ -56,6 +56,7 @@ def dashboard():
     form = MeasurementForm()
     if request.method == 'POST' and form.validate():
         add_measurement(dissoc(form.data, 'submit'))
+        flash("Merkintä lisätty.")
         return redirect(url_for('measurements.dashboard'))
 
     return render_template('index.html', form=form, measurements=data)
@@ -75,6 +76,7 @@ def edit(id):
         entry = dissoc(form.data, 'submit')
         entry['id'] = int(id)
         update_measurement(entry)
+        flash("Merkintä päivitetty.")
         return redirect(url_for('measurements.dashboard'))
 
     # Change default values
@@ -96,7 +98,7 @@ def history():
     '''List all measurements from db'''
     data = read_measurements()
     if not data:
-        flash("Tietokanta on tyhjä.")
+        flash("Tietokanta on tyhjä!")
         return redirect(url_for('measurements.dashboard'))
     return render_template('history.html', measurements=data)
 
