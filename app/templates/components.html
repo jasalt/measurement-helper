@@ -1,13 +1,20 @@
 {% macro entry_list(entries) -%}
 
-<ul>
-  {% for entry in entries %}
-  <li>
-    <a href="{{ url_for('measurements.edit', id=entry.id) }}">
-      {{entry}}
-    </a>
-  </li>
-  {% endfor %}
-</ul>
+<div class="panel panel-default">
+  <table class="table">
+    <tr>
+      <td>Tyyppi</td>
+      <td>Päivämäärä</td>
+      <td>Arvo</td>
+    </tr>
+    % for entry in entries
+    <tr>
+      <td><a href="{{ url_for('measurements.edit', id=entry.id) }}"> {{entry.type}}</a></td>
+      <td>{{entry.date}}</td>
+      <td>{{entry.value}}</td>
+    </tr>
+    % endfor
+  </table>
+</div>
 
 {% endmacro %}

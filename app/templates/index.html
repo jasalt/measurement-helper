@@ -19,11 +19,9 @@
   {{wtf.quick_form(form)}}
 </div>
 
-<div>
-  {{ components.entry_list(measurements) }}
-  <a class="btn btn-block btn-default" href="{{url_for('measurements.history')}}">Näytä kaikki</a>
-</div>
-
+<h3 class="">5 viimeisintä merkintää</h3>
+{{ components.entry_list(measurements) }}
+<a class="btn btn-block btn-default" href="{{url_for('measurements.history')}}">Näytä kaikki</a>
 
 % else
 <a class="btn btn-primary btn-lg"
