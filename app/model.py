@@ -1,3 +1,6 @@
+import dataset
+from stuf import stuf
+
 entry_model = \
             {"silt_active_ml_per_l":
              {"finnish": "Aktiivilietemittaus", "min": 0, "max": 1000,
@@ -19,3 +22,19 @@ entry_model = \
              {"finnish": "Ferrosulfaatin lisäys", "min": 1, "max": 1000,
               "description":
               "Ferrosulfaatin määrän lisäys kiloina."}}
+
+
+def connect_db():
+    return dataset.connect('sqlite:///measurements.db', row_type=stuf)
+
+
+def add_measurement(data):
+    db = connect_db()
+    table = db['measurements']
+    table.insert(data)
+
+
+def read_measurements():
+    db = connect_db()
+    measurements = db['measurements'].all()
+    return measurements

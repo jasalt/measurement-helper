@@ -7,7 +7,16 @@
 <div class="page-header">
   {{wtf.quick_form(form)}}
 </div>
-<p>Lista tähän</p>
+
+<div>
+  <ul>
+    % for entry in measurements
+
+    <li>{{entry}}</li>
+
+    % endfor
+  </ul>
+</div>
 
 % else
 

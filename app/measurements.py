@@ -10,8 +10,9 @@ from wtforms import TextField, SubmitField, SelectField, ValidationError, \
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, NumberRange
 from datetime import date
+from toolz import dissoc
 
-from model import entry_model
+from model import entry_model, add_measurement, read_measurements
 
 mod = Blueprint('measurements', __name__)
 
@@ -47,25 +48,18 @@ def show_measurements():
     return "This is the history"
 
 
-@mod.route('/add')
-@login_required
-def add_measurement():
-    return "Should show form for adding new stuff."
-
-
 # TODO route to login if not logged in
 @mod.route('/', methods=['GET', 'POST'])
 @login_required
 def dashboard():
     # request.form.last_added
+    data = read_measurements()
     form = AddForm()
     if request.method == 'POST' and form.validate():
-        print("Valid!")
-        print(form.data)
-        flash('Thanks for registering')
+        add_measurement(dissoc(form.data, 'submit'))
         return redirect(url_for('measurements.dashboard'))
 
-    return render_template('index.html', form=form)
+    return render_template('index.html', form=form, measurements=data)
 
 # Default to dashboard view with 10 last measurements and addition box
 #
