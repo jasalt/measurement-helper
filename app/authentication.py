@@ -11,6 +11,7 @@ from secret import auth_keys, mail_addresses
 mod = Blueprint('authentication', __name__)
 
 login_manager = LoginManager()
+login_manager.login_view = "authentication.login"
 
 
 class User(UserMixin):
