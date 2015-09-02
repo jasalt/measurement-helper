@@ -11,7 +11,7 @@ from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, NumberRange
 from datetime import date
 from time import strptime, mktime
-from toolz import assoc, dissoc, thread_first
+from toolz import assoc, dissoc, thread_first, take
 
 from model import entry_model, add_measurement, read_measurements, \
     delete_measurement, get_measurement, update_measurement
@@ -51,9 +51,9 @@ def dashboard():
     '''Default view with box for adding measurements and list of five last
     entries.'''
     # request.form.last_added
-    data = read_measurements() or None
+    data = take(5, read_measurements()) or None
     g.entry_model = entry_model
-    ## take 5 from data based on last dates
+
     form = MeasurementForm()
     if request.method == 'POST' and form.validate():
         add_measurement(dissoc(form.data, 'submit'))
@@ -69,7 +69,7 @@ def edit(id):
     print("Editing ID " + id)
     entry = get_measurement(id)
     g.entryid = entry.id
-    
+
     # HACK worked around csrf missing problem
     form = MeasurementForm(csrf_enabled=False)
 
