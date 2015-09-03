@@ -3,7 +3,8 @@ from operator import itemgetter
 from time import strptime, mktime
 from datetime import date
 from flask.ext.script import Command
-
+from utils import send_mail
+from secret import mail_addresses, server_address
 
 entry_model = \
             {"silt_active_ml_per_l":
@@ -77,12 +78,14 @@ class CheckNotifications(Command):
     def run(self):
         print("Reading DB")
         entries = read_measurements()
-        last_time = read_date_str(entries[0]['date'])
+        last_entry = entries[0]
+
+        last_time = read_date_str(last_entry['date'])
         today = date.today()
         diff = today - last_time
 
         if diff.days > 14:
-            print("There's measurement to be done!")
-            import ipdb; ipdb.set_trace()
-
-        return 0
+            print("No measurements in last 14 days, notifying user.")
+            return send_mail(mail_addresses[0], "Viimeisin merkintä otettu " +
+                             str(diff.days) + " päivää sitten. " +
+                             server_address)
