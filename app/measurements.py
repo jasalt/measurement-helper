@@ -13,7 +13,8 @@ from datetime import date
 from toolz import dissoc, take
 
 from model import entry_model, add_measurement, read_measurements, \
-    delete_measurement, get_measurement, update_measurement, read_date_str
+    delete_measurement, get_measurement, update_measurement, read_date_str, \
+    get_notification_intervals
 
 mod = Blueprint('measurements', __name__)
 
@@ -109,3 +110,31 @@ def delete(id):
     delete_measurement(id)
     flash("Merkintä poistettu.")
     return redirect(url_for('measurements.dashboard'))
+
+
+class SetupForm(Form):
+    # Fields are appended dynamically
+    @classmethod
+    def append_field(cls, name, field):
+        setattr(cls, name, field)
+        return cls
+
+
+@mod.route('/setup')
+@login_required
+def setup():
+    form = SetupForm()
+    nis = get_notification_intervals()
+
+    for ni in nis:
+        form.append_field(ni['type'],
+                          IntegerField(entry_model[ni['type']]['finnish'],
+                                       default=ni['interval_days']))
+        # (obj=db_populate_object)
+    form.append_field('submit',
+                      SubmitField('Tallenna'))
+    form.process()
+    # import ipdb; ipdb.set_trace()
+    return render_template('setup.html', form=form)
+    #flash("Merkintä poistettu.")
+    #return redirect(url_for('measurements.dashboard'))

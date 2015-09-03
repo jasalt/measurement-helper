@@ -59,6 +59,12 @@ class InitNotificationIntervals(Command):
                 tbl.insert({'type': k, 'interval_days': v['default_interval']})
 
 
+def get_notification_intervals():
+    tbl = get_table('notification_settings')
+    all = [a for a in tbl.all()]
+    return sorted(all, key=itemgetter('type'))
+
+
 def add_measurement(data):
     measurements = get_table('measurements')
     measurements.insert(data)

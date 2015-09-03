@@ -15,6 +15,7 @@
       <a class="navbar-brand" href="/">Milkilo Tracker</a>
       % if current_user.is_authenticated()
       <a class="navbar-brand pull-right" href="{{url_for('authentication.logout')}}">Kirjaudu ulos</a>
+      <a class="navbar-brand pull-right" href="{{url_for('measurements.setup')}}">Asetukset</a>
       % endif
     </div>
 
