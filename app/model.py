@@ -1,3 +1,4 @@
+# DB operations that are (not performance optimized at all).
 import dataset
 from operator import itemgetter
 from datetime import date
@@ -106,19 +107,32 @@ def delete_measurement(id):
 
 
 class CheckNotifications(Command):
-    '''Check if too long time has passed since last measurement.
-    TODO Notify user via mail.'''
+    '''Check if too long time has passed since last measurement and notify
+    user via email. '''
     def run(self):
-        print("Reading DB")
-        entries = read_measurements()
-        last_entry = entries[0]
+        measurements = get_table('measurements')
+        for setting in get_notification_intervals():
+            entry_type = setting['type']
+            interval = setting['interval_days']
 
-        last_time = read_date_str(last_entry['date'])
-        today = date.today()
-        diff = today - last_time
+            print("Checking " + entry_type)
+            entries = measurements.find(type=entry_type, order_by='-date')
 
-        if diff.days > 14:
-            print("No measurements in last 14 days, notifying user.")
-            return send_mail(mail_addresses[0], "Viimeisin merkintä otettu " +
-                             str(diff.days) + " päivää sitten. " +
-                             server_address)
+            try:
+                last_entry = entries.next()
+            except:
+                print("Cannot read records.")
+                continue
+
+            last_time = read_date_str(last_entry['date'])
+            today = date.today()
+            diff = today - last_time
+
+            if diff.days > interval:
+                print("No measurements in last %s days, notifying user."
+                      % interval)
+                return send_mail(mail_addresses[0],
+                                 ''' Viimeisin merkintä otettu %s  päivää sitten.
+                                 %s ''' % (str(diff.days), server_address))
+            else:
+                print('OK')
