@@ -1,15 +1,24 @@
 import dataset
 from operator import itemgetter
-from time import strptime, mktime
 from datetime import date
 from flask.ext.script import Command
-from utils import send_mail
+from utils import send_mail, read_date_str
 from secret import mail_addresses, server_address
+
+
+def get_db():
+    return dataset.connect('sqlite:///measurements.db', row_type=dict)
+
+
+def get_table(table_name):
+    db = get_db()
+    return db[table_name]
 
 entry_model = \
             {"silt_active_ml_per_l":
              {"finnish": "Aktiivilietemittaus", "min": 0, "max": 1000,
-              "description": "aktiivilietteen mittaus (ml per litra)"},
+              "description": "aktiivilietteen mittaus (ml per litra)",
+              "default_interval": 14},
              "silt_surplus_removal_l":
              {"finnish": "Poistopumppaus", "min": 1, "max": 1000,
               "description": "ylijäämälietteen poistomäärä litroina"},
@@ -19,55 +28,65 @@ entry_model = \
              "water_quality":
              {"finnish": "Kirkasvesinäyte", "min": 1, "max": 5,
               "description":
-              "kirkasveden laatu asteikolla 1-5 (1 on parhain)"},
+              "kirkasveden laatu asteikolla 1-5 (1 on parhain)",
+              "default_interval": 30},
              "ferrosulphate_level_percent":
              {"finnish": "Ferrosulfaatin määrä", "min": 0, "max": 100,
-              "description": "ferrosulfaatin määrä sentteinä"},
+              "description": "ferrosulfaatin määrä sentteinä",
+              "default_interval": 14},
              "ferrosulphate_addition_kg":
              {"finnish": "Ferrosulfaatin lisäys", "min": 1, "max": 1000,
               "description":
-              "Ferrosulfaatin määrän lisäys kiloina."}}
+              "Ferrosulfaatin määrän lisäys kiloina.",
+              "default_interval": 30}}
 
 
-def read_date_str(timestr):
-    '''Read date string that's stored in database'''
-    st = strptime(timestr, "%Y-%m-%d")
-    return date.fromtimestamp(mktime(st))
+class InitNotificationIntervals(Command):
+    '''Set default notification intervals to DB.'''
+    def run(self):
+        tablename = 'notification_settings'
+        print("Checking if table %s exists." % tablename)
+        db = get_db()
+        if tablename in db.tables:
+            print('Table exists. Skipping.')
+            return
+        print('Table not found, initializing default notification intervals.')
 
+        tbl = db[tablename]
 
-def get_table():
-    db = dataset.connect('sqlite:///measurements.db', row_type=dict)
-    return db['measurements']
+        for k, v in entry_model.items():
+            if v.get('default_interval'):
+                tbl.insert({'type': k, 'interval_days': v['default_interval']})
 
 
 def add_measurement(data):
-    measurements = get_table()
+    measurements = get_table('measurements')
     measurements.insert(data)
 
 
 def read_measurements():
     '''Return all measurements from db. Sorted primarily by date, secondarily
     by id.'''
-    measurements = get_table()
+    measurements = get_table('measurements')
     all = [a for a in measurements.all()]
     all_sorted = sorted(all, key=itemgetter('date', 'id'), reverse=True)
     return all_sorted
 
 
 def get_measurement(id):
-    measurements = get_table()
+    measurements = get_table('measurements')
     return measurements.find_one(id=id)
 
 
 def update_measurement(data):
     '''Update entry by id.'''
-    measurements = get_table()
+    measurements = get_table('measurements')
     print(data)
     measurements.update(data, ['id'])
 
 
 def delete_measurement(id):
-    measurements = get_table()
+    measurements = get_table('measurements')
     print("DELETE " + str(id))
     measurements.delete(id=id)
 

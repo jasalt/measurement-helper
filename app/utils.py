@@ -1,6 +1,8 @@
 from functools import partial
 import requests
 from secret import mailgun_key
+from time import strptime, mktime
+from datetime import date
 
 
 class DoTo(object):
@@ -14,6 +16,12 @@ class DoTo(object):
 
     def __getattr__(self, item):
         return partial(self._do, item)
+
+
+def read_date_str(timestr):
+    '''Read date string that's stored in database'''
+    st = strptime(timestr, "%Y-%m-%d")
+    return date.fromtimestamp(mktime(st))
 
 
 def send_mail(address, content):

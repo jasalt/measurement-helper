@@ -3,7 +3,7 @@
 from flask import Flask
 from flask.ext.script import Manager, Server
 from flask.ext.bootstrap import Bootstrap
-from model import CheckNotifications
+from model import CheckNotifications, InitNotificationIntervals
 
 import authentication
 import measurements
@@ -29,6 +29,7 @@ manager.add_command("run", Server(host="0.0.0.0", port=5001,
                                   use_debugger=False, use_reloader=True))
 
 manager.add_command("check_notifications", CheckNotifications())
+manager.add_command("init", InitNotificationIntervals())
 
 if __name__ == '__main__':
     manager.run()
