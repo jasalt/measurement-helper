@@ -65,6 +65,14 @@ def get_notification_intervals():
     return sorted(all, key=itemgetter('type'))
 
 
+def set_notification_intervals(nis):
+    '''Update notification intervals given in iterable.'''
+    tbl = get_table('notification_settings')
+    print("Setting new notification values")
+    for name, val in nis.items():
+        tbl.update({'type': name, 'interval_days': val}, ['type'])
+
+
 def add_measurement(data):
     measurements = get_table('measurements')
     measurements.insert(data)

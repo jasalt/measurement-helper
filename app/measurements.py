@@ -14,7 +14,7 @@ from toolz import dissoc, take
 
 from model import entry_model, add_measurement, read_measurements, \
     delete_measurement, get_measurement, update_measurement, read_date_str, \
-    get_notification_intervals
+    get_notification_intervals, set_notification_intervals
 
 mod = Blueprint('measurements', __name__)
 
@@ -84,10 +84,9 @@ def edit(id):
     form.type.default = entry['type']
     form.comment.default = entry['comment']
     form.value.default = entry['value']
-
     form.date.default = read_date_str(entry['date'])
-
     form.process()
+
     return render_template('edit.html', form=form)
 
 
@@ -113,28 +112,31 @@ def delete(id):
 
 
 class SetupForm(Form):
-    # Fields are appended dynamically
     @classmethod
     def append_field(cls, name, field):
+        '''Append field to form from outside code.'''
         setattr(cls, name, field)
         return cls
 
 
-@mod.route('/setup')
+@mod.route('/setup', methods=['GET', 'POST'])
 @login_required
 def setup():
+    # Form fields are appended dynamically
     form = SetupForm()
-    nis = get_notification_intervals()
 
+    if request.method == 'POST' and form.validate():
+        set_notification_intervals(dissoc(form.data, 'submit'))
+        flash("Ilmoitusasetukset päivitetty!")
+        return redirect(url_for('measurements.dashboard'))
+
+    nis = get_notification_intervals()
     for ni in nis:
         form.append_field(ni['type'],
                           IntegerField(entry_model[ni['type']]['finnish'],
                                        default=ni['interval_days']))
-        # (obj=db_populate_object)
-    form.append_field('submit',
-                      SubmitField('Tallenna'))
+    form.append_field('submit', SubmitField('Tallenna'))
     form.process()
+
     # import ipdb; ipdb.set_trace()
     return render_template('setup.html', form=form)
-    #flash("Merkintä poistettu.")
-    #return redirect(url_for('measurements.dashboard'))
