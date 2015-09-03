@@ -10,11 +10,10 @@ from wtforms import TextField, SubmitField, SelectField, ValidationError, \
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired
 from datetime import date
-from time import strptime, mktime
 from toolz import dissoc, take
 
 from model import entry_model, add_measurement, read_measurements, \
-    delete_measurement, get_measurement, update_measurement
+    delete_measurement, get_measurement, update_measurement, read_date_str
 
 mod = Blueprint('measurements', __name__)
 
@@ -85,9 +84,7 @@ def edit(id):
     form.comment.default = entry['comment']
     form.value.default = entry['value']
 
-    st = strptime(entry['date'], "%Y-%m-%d")
-    d = date.fromtimestamp(mktime(st))
-    form.date.default = d
+    form.date.default = read_date_str(entry['date'])
 
     form.process()
     return render_template('edit.html', form=form)

@@ -1,5 +1,8 @@
 import dataset
 from operator import itemgetter
+from time import strptime, mktime
+from datetime import date
+
 
 entry_model = \
             {"silt_active_ml_per_l":
@@ -17,11 +20,17 @@ entry_model = \
               "kirkasveden laatu asteikolla 1-5 (1 on parhain)"},
              "ferrosulphate_level_percent":
              {"finnish": "Ferrosulfaatin määrä", "min": 0, "max": 100,
-              "description": "ferrosulfaattimittarin prosenttilukema"},
+              "description": "ferrosulfaatin määrä sentteinä"},
              "ferrosulphate_addition_kg":
              {"finnish": "Ferrosulfaatin lisäys", "min": 1, "max": 1000,
               "description":
               "Ferrosulfaatin määrän lisäys kiloina."}}
+
+
+def read_date_str(timestr):
+    '''Read date string that's stored in database'''
+    st = strptime(timestr, "%Y-%m-%d")
+    return date.fromtimestamp(mktime(st))
 
 
 def get_table():
