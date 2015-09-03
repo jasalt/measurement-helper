@@ -2,6 +2,7 @@ import dataset
 from operator import itemgetter
 from time import strptime, mktime
 from datetime import date
+from flask.ext.script import Command
 
 
 entry_model = \
@@ -68,3 +69,20 @@ def delete_measurement(id):
     measurements = get_table()
     print("DELETE " + str(id))
     measurements.delete(id=id)
+
+
+class CheckNotifications(Command):
+    '''Check if too long time has passed since last measurement.
+    TODO Notify user via mail.'''
+    def run(self):
+        print("Reading DB")
+        entries = read_measurements()
+        last_time = read_date_str(entries[0]['date'])
+        today = date.today()
+        diff = today - last_time
+
+        if diff.days > 14:
+            print("There's measurement to be done!")
+            import ipdb; ipdb.set_trace()
+
+        return 0
