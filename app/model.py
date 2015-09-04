@@ -2,10 +2,12 @@
 import dataset
 from operator import itemgetter
 from datetime import date
+from time import strptime, mktime
 from flask.ext.script import Command, prompt_bool
 from utils import send_mail, read_date_str
 from secret import mail_addresses, server_address
 import csv
+from toolz.curried import dissoc, take, first, second
 
 
 def get_db():
@@ -175,11 +177,23 @@ class InitFromCsv(Command):
         with open('../data/old_entries.csv') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                if row['site_id'] is not 3:
+
+                if row['site_id'] is not '3':
                     print('Skip entry for test_site')
                     continue
 
-                import ipdb; ipdb.set_trace()
-                print("Add")
-                # if v.get('default_interval'):
-                #     tbl.insert({'type': k, 'interval_days': v['default_interval']})
+                # Remove empty items from dict
+                cleaned_row = dict((k, v) for k, v in row.items() if v)
+                # Take date part of time string gotten from postgres
+                datestr = cleaned_row['date'][:10]
+                st = strptime(datestr, "%Y-%m-%d")
+                entry_date = date.fromtimestamp(mktime(st))
+
+                typeval_dict = dissoc(cleaned_row, 'id', 'date', 'site_id')
+                typeval = first(typeval_dict.items())
+
+                entry = {'type': first(typeval),
+                         'value': second(typeval),
+                         'date': entry_date}
+                print("Adding " + str(entry))
+                tbl.insert(entry)
