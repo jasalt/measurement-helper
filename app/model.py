@@ -2,13 +2,14 @@
 import dataset
 from operator import itemgetter
 from datetime import date
-from flask.ext.script import Command
+from flask.ext.script import Command, prompt_bool
 from utils import send_mail, read_date_str
 from secret import mail_addresses, server_address
+import csv
 
 
 def get_db():
-    return dataset.connect('sqlite:///measurements.db', row_type=dict)
+    return dataset.connect('sqlite:///database.db', row_type=dict)
 
 
 def get_table(table_name):
@@ -106,6 +107,16 @@ def delete_measurement(id):
     measurements.delete(id=id)
 
 
+def check_table(tablename):
+    '''Check if database table exists, return it or None if not existing.'''
+    print("Checking if table %s exists." % tablename)
+    db = get_db()
+    if tablename in db.tables:
+        return db[tablename]
+    else:
+        return None
+
+
 class CheckNotifications(Command):
     '''Check if too long time has passed since last measurement and notify
     user via email. '''
@@ -136,3 +147,39 @@ class CheckNotifications(Command):
                                  %s ''' % (str(diff.days), server_address))
             else:
                 print('OK')
+
+
+class DropDb(Command):
+    '''Drop the measurements table. Prompts user first.'''
+    def run(self):
+        if prompt_bool("Are you sure you want to lose all your data"):
+            table = get_table('measurements')
+            table.drop()
+            print("Table 'measurements' dropped.")
+
+
+class InitFromCsv(Command):
+    '''Initialize data from csv.'''
+    def run(self):
+        tablename = 'measurements'
+        print("Checking if table %s exists." % tablename)
+        tbl = check_table(tablename)
+
+        if tbl is not None:
+            print('Table exists, skipping. Drop it first?')
+            return
+
+        print('Table not found, initializing with csv data.')
+        tbl = get_table(tablename)
+
+        with open('../data/old_entries.csv') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                if row['site_id'] is not 3:
+                    print('Skip entry for test_site')
+                    continue
+
+                import ipdb; ipdb.set_trace()
+                print("Add")
+                # if v.get('default_interval'):
+                #     tbl.insert({'type': k, 'interval_days': v['default_interval']})

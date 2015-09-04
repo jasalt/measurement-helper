@@ -3,11 +3,11 @@
 from flask import Flask
 from flask.ext.script import Manager, Server
 from flask.ext.bootstrap import Bootstrap
-from model import CheckNotifications, InitNotificationIntervals
+from model import CheckNotifications, InitNotificationIntervals, InitFromCsv, \
+    DropDb
 
 import authentication
 import measurements
-
 
 app = Flask(__name__)
 app.jinja_env.line_statement_prefix = '%'
@@ -30,6 +30,8 @@ manager.add_command("run", Server(host="0.0.0.0", port=5001,
 
 manager.add_command("check_notifications", CheckNotifications())
 manager.add_command("init", InitNotificationIntervals())
+manager.add_command("load_csv", InitFromCsv())
+manager.add_command("drop_db", DropDb())
 
 if __name__ == '__main__':
     manager.run()
