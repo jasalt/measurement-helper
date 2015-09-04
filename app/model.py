@@ -1,5 +1,6 @@
 # DB operations that are (not performance optimized at all).
 import dataset
+import os
 from operator import itemgetter
 from datetime import date
 from time import strptime, mktime
@@ -77,8 +78,8 @@ def load_csv():
 
     print('Table not found, initializing with csv data.')
     tbl = get_table(tablename)
-
-    with open('../data/old_entries.csv') as csvfile:
+    filepath = os.path.abspath(os.path.dirname(__file__))
+    with open(filepath + '/data/old_entries.csv') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
 
