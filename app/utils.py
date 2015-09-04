@@ -1,8 +1,12 @@
 from functools import partial
 import requests
-from secret import mailgun_key
 from time import strptime, mktime
 from datetime import date
+import os
+
+
+def get_env(x):
+    os.environ.get(x)
 
 
 class DoTo(object):
@@ -29,7 +33,7 @@ def send_mail(address, content):
     return requests.post(
         "https://api.mailgun.net/v3/sandbox9ad2bba97910488e831f2e314e32ed0f." +
         "mailgun.org/messages",
-        auth=("api", mailgun_key),
+        auth=("api", get_env('MAILGUN_KEY')),
         data={"from": '''Milkilo Huomautus
         <mailgun@sandbox9ad2bba97910488e831f2e314e32ed0f.mailgun.org>''',
               "to": address,

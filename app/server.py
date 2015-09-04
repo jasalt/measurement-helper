@@ -3,8 +3,7 @@
 from flask import Flask
 from flask.ext.script import Manager, Server
 from flask.ext.bootstrap import Bootstrap
-from model import CheckNotifications, InitNotificationIntervals, InitFromCsv, \
-    DropDb
+from model import CheckNotifications, InitDb, DropDb
 
 import authentication
 import measurements
@@ -29,16 +28,9 @@ manager.add_command("run", Server(host="0.0.0.0", port=5001,
 
 manager.add_command("check_notifications", CheckNotifications())
 
+manager.add_command("init_db", InitDb())
 manager.add_command("drop_db", DropDb())
-manager.add_command("init", InitNotificationIntervals())
-manager.add_command("load_csv", InitFromCsv())
 
-
-@manager.command
-def deploy():
-    '''Initialize database.'''
-    InitNotificationIntervals()
-    InitFromCsv()
 
 if __name__ == '__main__':
     manager.run()

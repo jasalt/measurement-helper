@@ -5,9 +5,12 @@ from datetime import date
 from time import strptime, mktime
 from flask.ext.script import Command, prompt_bool
 from utils import send_mail, read_date_str
-from secret import mail_addresses, server_address
 import csv
-from toolz.curried import dissoc, take, first, second
+from toolz.curried import dissoc, first, second
+from utils import get_env
+
+mail_addresses = [get_env('ADMIN_EMAIL'), get_env('FLASK_APP_EMAIL')]
+server_address = get_env('SERVER_ADDRESS')
 
 
 def get_db():
@@ -45,22 +48,59 @@ entry_model = \
               "default_interval": 30}}
 
 
-class InitNotificationIntervals(Command):
+def init_notification_intervals():
     '''Set default notification intervals to DB.'''
-    def run(self):
-        tablename = 'notification_settings'
-        print("Checking if table %s exists." % tablename)
-        db = get_db()
-        if tablename in db.tables:
-            print('Table exists. Skipping.')
-            return
-        print('Table not found, initializing default notification intervals.')
+    tablename = 'notification_settings'
+    print("Checking if table %s exists." % tablename)
+    db = get_db()
+    if tablename in db.tables:
+        print('Table exists. Skipping.')
+        return
+    print('Table not found, initializing default notification intervals.')
 
-        tbl = db[tablename]
+    tbl = db[tablename]
 
-        for k, v in entry_model.items():
-            if v.get('default_interval'):
-                tbl.insert({'type': k, 'interval_days': v['default_interval']})
+    for k, v in entry_model.items():
+        if v.get('default_interval'):
+            tbl.insert({'type': k, 'interval_days': v['default_interval']})
+
+
+def load_csv():
+    '''Initialize data from csv.'''
+    tablename = 'measurements'
+    print("Checking if table %s exists." % tablename)
+    tbl = check_table(tablename)
+
+    if tbl is not None:
+        print('Table exists, skipping. Drop it first?')
+        return
+
+    print('Table not found, initializing with csv data.')
+    tbl = get_table(tablename)
+
+    with open('../data/old_entries.csv') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+
+            if row['site_id'] is not '3':
+                print('Skip entry for test_site')
+                continue
+
+            # Remove empty items from dict
+            cleaned_row = dict((k, v) for k, v in row.items() if v)
+            # Take date part of time string gotten from postgres
+            datestr = cleaned_row['date'][:10]
+            st = strptime(datestr, "%Y-%m-%d")
+            entry_date = date.fromtimestamp(mktime(st))
+
+            typeval_dict = dissoc(cleaned_row, 'id', 'date', 'site_id')
+            typeval = first(typeval_dict.items())
+
+            entry = {'type': first(typeval),
+                     'value': second(typeval),
+                     'date': entry_date}
+            print("Adding " + str(entry))
+            tbl.insert(entry)
 
 
 def get_notification_intervals():
@@ -123,6 +163,7 @@ class CheckNotifications(Command):
     '''Check if too long time has passed since last measurement and notify
     user via email. '''
     def run(self):
+        msg = ''' Viimeisin merkintä otettu %s  päivää sitten. %s '''
         measurements = get_table('measurements')
         for setting in get_notification_intervals():
             entry_type = setting['type']
@@ -144,56 +185,27 @@ class CheckNotifications(Command):
             if diff.days > interval:
                 print("No measurements in last %s days, notifying user."
                       % interval)
-                return send_mail(mail_addresses[0],
-                                 ''' Viimeisin merkintä otettu %s  päivää sitten.
-                                 %s ''' % (str(diff.days), server_address))
+                for address in mail_addresses:
+                    if address is not None:
+                        send_mail(address,
+                                  msg % (str(diff.days), server_address))
             else:
                 print('OK')
+
+
+class InitDb(Command):
+    '''Set default notification intervals to DB.'''
+    def run(self):
+        load_csv()
+        init_notification_intervals()
 
 
 class DropDb(Command):
     '''Drop the measurements table. Prompts user first.'''
     def run(self):
         if prompt_bool("Are you sure you want to lose all your data"):
-            table = get_table('measurements')
-            table.drop()
-            print("Table 'measurements' dropped.")
-
-
-class InitFromCsv(Command):
-    '''Initialize data from csv.'''
-    def run(self):
-        tablename = 'measurements'
-        print("Checking if table %s exists." % tablename)
-        tbl = check_table(tablename)
-
-        if tbl is not None:
-            print('Table exists, skipping. Drop it first?')
-            return
-
-        print('Table not found, initializing with csv data.')
-        tbl = get_table(tablename)
-
-        with open('../data/old_entries.csv') as csvfile:
-            reader = csv.DictReader(csvfile)
-            for row in reader:
-
-                if row['site_id'] is not '3':
-                    print('Skip entry for test_site')
-                    continue
-
-                # Remove empty items from dict
-                cleaned_row = dict((k, v) for k, v in row.items() if v)
-                # Take date part of time string gotten from postgres
-                datestr = cleaned_row['date'][:10]
-                st = strptime(datestr, "%Y-%m-%d")
-                entry_date = date.fromtimestamp(mktime(st))
-
-                typeval_dict = dissoc(cleaned_row, 'id', 'date', 'site_id')
-                typeval = first(typeval_dict.items())
-
-                entry = {'type': first(typeval),
-                         'value': second(typeval),
-                         'date': entry_date}
-                print("Adding " + str(entry))
-                tbl.insert(entry)
+            mtable = get_table('measurements')
+            mtable.drop()
+            ntable = get_table('notification_settings')
+            ntable.drop()
+            print("Tables dropped.")

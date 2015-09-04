@@ -5,8 +5,10 @@ from flask_wtf import Form
 from wtforms import PasswordField, SubmitField
 from flask.ext.login import LoginManager, login_user, UserMixin, logout_user
 from wtforms.validators import DataRequired, AnyOf
+from utils import get_env
 
-from secret import auth_keys, mail_addresses
+auth_key = get_env('FLASK_APP_PASSWORD') or 'topsecret'
+auth_keys = [auth_key]  # TODO ugly quick workaround
 
 mod = Blueprint('authentication', __name__)
 
@@ -25,7 +27,6 @@ class User(UserMixin):
 
     def __init__(self):
         self.id = "no-one"
-        self.emails = mail_addresses
 
     @classmethod
     def get(cls, id):

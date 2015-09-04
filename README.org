@@ -16,20 +16,29 @@ pip install -r requirements.txt
 Pip may throw permission error about ~/.cache/pip/ when installing. Fix by running:
 
 sudo chown -R USERNAME:USERNAME $HOME/.cache/pip
+** Initializing database and environment variables
+Initialize tables:
+`python server.py init_db`
+
+Setup env vars:
+FLASK_APP_PASSWORD="somethingHard_to-guess"
+
+MAILGUN_KEY = 'key-xxxblablaetcxxx'
+ADMIN_EMAIL="foo@example.com"
+FLASK_APP_EMAIL="bar@example.com"
+SERVER_ADDRESS = 'http://your-awesome-domain.net'
 
 ** Running development server with debugger and auto reloader
 
-    python server.py dev
+`python server.py dev`
 
 Defaults to localhost:5000. Changing host and port for exposing server for 
 external requests (might be dangerous if debugger is enabled):
 
-    python server.py dev -h 0.0.0.0 -p 80
+python server.py dev -h 0.0.0.0 -p 80
 
-** Running server
-For quick, safe and inefficient serving on port 5001 use
-
-python server.py run
+** Running
+python run.py
 
 ** To Do
 - [X] +User auth by env token, [[http://flask-sqlalchemy.pocoo.org/2.0/quickstart/][flask-login]]

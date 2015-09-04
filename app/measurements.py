@@ -124,7 +124,7 @@ class SetupForm(Form):
 def setup():
     # Form fields are appended dynamically
     form = SetupForm()
-
+    
     if request.method == 'POST' and form.validate():
         set_notification_intervals(dissoc(form.data, 'submit'))
         flash("Ilmoitusasetukset päivitetty!")
