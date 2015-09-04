@@ -2,12 +2,13 @@
 from tornado.wsgi import WSGIContainer
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
-from server import app, deploy
+from server import app
+from model import InitDb
 import logging
 from logging import StreamHandler
 import os
 
-deploy()
+InitDb()
 
 file_handler = StreamHandler()
 file_handler.setLevel(logging.WARNING)
