@@ -6,7 +6,13 @@ import os
 
 
 def get_env(x):
-    os.environ.get(x)
+    res = os.environ.get(x)
+    if res is not None:
+        print("Found env var " + x + " " + res)
+        return res
+    else:
+        print("Env var " + x + " not found")
+        return None
 
 
 class DoTo(object):
