@@ -1,7 +1,7 @@
 * Measurement Helper
 Simplistic web application to help doing repeated measurements. Designed to be hosted for free on [[https://www.heroku.com/][Heroku]]. UI texts are in Finnish, source code in English. Consider it *public domain*, no warranties provided.
 
-- Password protected Web UI logging measurement data
+- Password protected Web UI for logging/viewing data
 - Email notifications with configurable alert intervals for different measurement types
 
 Built with
@@ -71,5 +71,8 @@ With [[https://toolbelt.heroku.com/][Heroku Toolbelt]] installed and account con
 4) Push local repository to Heroku =git push heroku master=
 5) Initialize database =heroku run python app/server.py init_db=
 6) Access application at =http://<application_name>.herokuapp.com=
+
+Optionally setup [[file:scripts/heroku-caffeine.py][Heroku keepalive script]] to keep node running during daytime.
 ** Running elsewhere
 See Procfile (Heroku configuration file) for hints, at least logging won't work by default via run.py so it needs work.
+
