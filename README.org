@@ -1,21 +1,49 @@
-** Development environment setup
-(Written on Linux Mint 17.2 / Ubuntu 14.04)
+* Measurement Helper
+Simplistic web application to help doing repeated measurements. Designed to be hosted for free on [[https://www.heroku.com/][Heroku]]. UI texts are in Finnish, source code in English. Consider it *public domain*, no warranties provided.
 
-Distribution provided prerequirements are:
-- Python 3.4 
+- Password protected Web UI logging measurement data
+- Email notifications with configurable alert intervals for different measurement types
+
+Built with
+- [[http://flask.pocoo.org/][Python Flask]] web framework
+  - [[https://flask-login.readthedocs.org/][Flask-Login]] extension for simple single user authentication
+  - [[http://jinja.pocoo.org/][Jinja2]] templating engine
+  - [[http://getbootstrap.com/][Bootstrap]] HTML UI toolkit with [[https://github.com/mbr/flask-bootstrap][Flask-Bootstrap]] extension
+  - [[https://wtforms.readthedocs.org/en/latest/][WTForms]] HTML form library for input validation
+- [[https://dataset.readthedocs.org/][Python Dataset]] SQL Database wrapper (tested on SQLite and PostgreSQL)
+- [[https://mailgun.com/][Mailgun]] for sending emails
+
+** To Do
+- [X] +User auth by env token, [[http://flask-sqlalchemy.pocoo.org/2.0/quickstart/][flask-login]]
+- [X] [[https://dataset.readthedocs.org/en/latest/][Dataset]] and sqlite
+- [X] Views
+- [X] [[https://github.com/lepture/flask-wtf][WTForms]] classes & validation for entries
+- [ ] Cron script for [[http://pythonhosted.org/Flask-Mail/][flask-mail]] notifications
+- [ ] Backups
+- [ ] Serving
+- [ ] SSL
+
+Code was written in quickly in few days and was not tested by design.
+  
+* Environment setup
+Developed on Linux Mint 17.2.
+Using Heroku free plan for production. 
+
+Distribution provided prerequirements:
+- Python 3.4 with development package
+- PostgreSQL development package libpq-dev
 - [[https://en.wikipedia.org/wiki/Pip_(package_manager)][pip]] package manager
+=sudo apt-get install python3-pip python3-dev libpq-dev=
 
-And some (optional) tooling provided by pip:
+Some (optional) tooling provided by pip:
 - [[http://docs.python-guide.org/en/latest/dev/virtualenvs/][virtualenv]] Python project dependency isolation tool
 - [[https://virtualenvwrapper.readthedocs.org/en/latest/][virtualenvwrapper]] virtualenv helper (supported by [[https://www.gnu.org/software/emacs/][Emacs]] [[https://github.com/jorgenschaefer/elpy/wiki][ELPY Python IDE]])
-
+=pip install virtualenv virtualenvwrapper=
 =mkvirtualenv -p /usr/bin/python3.4 measurement-helper=
 
-=pip install -r requirements.txt=
+Install project dependencies =pip install -r requirements.txt=.
 
-Pip may throw permission error about ~/.cache/pip/ when installing. Fix by running:
-
-=sudo chown -R USERNAME:USERNAME $HOME/.cache/pip=
+Pip may throw permission error about ~/.cache/pip/ when installing. Fix by running =sudo chown -R USERNAME:USERNAME $HOME/.cache/pip=.
 ** Initializing database and environment variables
 Initialize tables:
 =python server.py init_db=
@@ -30,23 +58,18 @@ FLASK_APP_EMAIL="bar@example.com"
 SERVER_ADDRESS = 'http://your-awesome-domain.net'
 #+END_SRC
 
-** Running development server with debugger and auto reloader
+For heroku the command is =heroku config:set <VARIABLE_SETTING>=.
+* Development server
+Command =python server.py dev= defaults to localhost:5000. Changing host and port for exposing server for external requests (might be dangerous if debugger is enabled) can be accomplished by running =python server.py dev -h 0.0.0.0 -p 80=.
+* Production server
+** Heroku
+With [[https://toolbelt.heroku.com/][Heroku Toolbelt]] installed and account configured:
 
-=python server.py dev=
-
-Defaults to localhost:5000. Changing host and port for exposing server for 
-external requests (might be dangerous if debugger is enabled):
-
-=python server.py dev -h 0.0.0.0 -p 80=
-
-** Running
-=python run.py=
-
-** To Do
-- [X] +User auth by env token, [[http://flask-sqlalchemy.pocoo.org/2.0/quickstart/][flask-login]]
-- [X] [[https://dataset.readthedocs.org/en/latest/][Dataset]] and sqlite
-- [X] Views
-- [X] [[https://github.com/lepture/flask-wtf][WTForms]] classes & validation for entries
-- [ ] Cron script for [[http://pythonhosted.org/Flask-Mail/][flask-mail]] notifications
-- [ ] Backups
-- [ ] Serving 
+1) Clone repository =git clone <repository url>=
+2) Create Heroku app =heroku app <application_name>=
+3) Add free PostgeSQL addon =heroku addons:create heroku-postgresql:hobby-dev= 
+4) Push local repository to Heroku =git push heroku master=
+5) Initialize database =heroku run python app/server.py init_db=
+6) Access application at =http://<application_name>.herokuapp.com=
+** Running elsewhere
+See Procfile (Heroku configuration file) for hints, at least logging won't work by default via run.py so it needs work.
