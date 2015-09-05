@@ -13,9 +13,12 @@ from utils import get_env
 mail_addresses = [get_env('ADMIN_EMAIL'), get_env('FLASK_APP_EMAIL')]
 server_address = get_env('SERVER_ADDRESS')
 
+db_url = get_env('DATABASE_URL') or 'sqlite:///database.db'
+print("DB connection url is " + db_url)
+
 
 def get_db():
-    return dataset.connect('sqlite:///database.db', row_type=dict)
+    return dataset.connect(db_url, row_type=dict)
 
 
 def get_table(table_name):
