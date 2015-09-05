@@ -18,9 +18,9 @@ Built with
 - [X] [[https://dataset.readthedocs.org/en/latest/][Dataset]] and sqlite
 - [X] Views
 - [X] [[https://github.com/lepture/flask-wtf][WTForms]] classes & validation for entries
-- [ ] Cron script for [[http://pythonhosted.org/Flask-Mail/][flask-mail]] notifications
+- [X] Schedule [[http://pythonhosted.org/Flask-Mail/][flask-mail]] notifications
+- [X] Serving on heroku
 - [ ] Backups
-- [ ] Serving
 - [ ] SSL
 
 Code was written in quickly in few days and was not tested by design.
@@ -72,7 +72,10 @@ With [[https://toolbelt.heroku.com/][Heroku Toolbelt]] installed and account con
 5) Initialize database =heroku run python app/server.py init_db=
 6) Access application at =http://<application_name>.herokuapp.com=
 
-Optionally setup [[file:scripts/heroku-caffeine.py][Heroku keepalive script]] to keep node running during daytime.
+Optionally setup cronjob somewhere to keep node running during daytime by adding following line to cron:
+
+=*/8 06-21 * * * curl http://<app_name>.herokuapp.com=
+
 ** Running elsewhere
 See Procfile (Heroku configuration file) for hints, at least logging won't work by default via run.py so it needs work.
 ** Setup notification scheduler
