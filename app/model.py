@@ -167,7 +167,7 @@ class CheckNotifications(Command):
     '''Check if too long time has passed since last measurement and notify
     user via email. '''
     def run(self):
-        msg = ''' Viimeisin merkintä otettu %s  päivää sitten. %s '''
+        msg = '''Viimeisin %s merkintä otettu %s päivää sitten. %s'''
         measurements = get_table('measurements')
         for setting in get_notification_intervals():
             entry_type = setting['type']
@@ -191,8 +191,9 @@ class CheckNotifications(Command):
                       % interval)
                 for address in mail_addresses:
                     if address is not None:
-                        send_mail(address,
-                                  msg % (str(diff.days), server_address))
+                        send_mail(address, msg %
+                                  (entry_model[entry_type]['finnish'].lower(),
+                                   str(diff.days), server_address))
             else:
                 print('OK')
 
