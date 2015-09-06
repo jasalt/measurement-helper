@@ -80,18 +80,16 @@ Optionally setup cronjob somewhere to keep node running during daytime by adding
 See Procfile (Heroku configuration file) for hints, at least logging won't work by default via run.py so it needs work.
 ** Setup notification scheduler
 Notifications for doing scheduled measurements are sent to addresses declared by environment variables =ADMIN_EMAIL= and =FLASK_APP_EMAIL=. Database stores only date, so hourly running check_notifications script may send notifications during night, which might cause undesired side effects.
+*** Heroku Scheduler
+Heroku Scheduler can be used to send notifications on daily basis, but it *requires linking a credit card to Heroku account* as scheduled tasks going over the given 750 monthly free dyno hours will require payment. To enable notifications via Heroku Scheduler addon:
 
+1) =heroku addons:create scheduler=
+2) Open scheduler web UI =heroku addons:open scheduler=
+3) Setup new scheduler command =python app/server.py check_notifications=
 *** Calling Heroku node to run script via cron / anacron
 1) Run =crontab -e= or edit =/etc/anacrontab=
 2) Add rule =* 7 * * * heroku run --app <app_name> python app/server.py check_notifications=
 
 (didn't test this yet, but should work, maybe with minor fixing)
-*** Heroku Scheduler
-Heroku Scheduler can be used to send notifications on hourly basis, but it *requires linking a credit card to Heroku account* as scheduled tasks going over the given 750 monthly free dyno hours will require payment. To enable notifications via Heroku Scheduler addon:
-
-1) =heroku addons:create scheduler=
-2) Open scheduler web UI =heroku addons:open scheduler=
-3) Setup new scheduler command =python app/server.py check_notifications=
-
 *** Running script on other machine via cron / anacron
 Notification script =python app/server.py check_notifications= can be scheduled simply in cron or anacron. Machine should have environment variable DATABASE_URL set to application database. Heroku database url can be queried with =heroku config=.
