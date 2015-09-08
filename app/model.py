@@ -39,8 +39,7 @@ entry_model = \
              "water_quality":
              {"finnish": "Kirkasvesinäyte", "min": 1, "max": 5,
               "description":
-              "kirkasveden laatu asteikolla 1-5 (1 on parhain)",
-              "default_interval": 30},
+              "kirkasveden laatu asteikolla 1-5 (1 on parhain)"},
              "ferrosulphate_level_percent":
              {"finnish": "Ferrosulfaatin määrä", "min": 0, "max": 100,
               "description": "ferrosulfaatin määrä sentteinä",
@@ -48,8 +47,7 @@ entry_model = \
              "ferrosulphate_addition_kg":
              {"finnish": "Ferrosulfaatin lisäys", "min": 1, "max": 1000,
               "description":
-              "Ferrosulfaatin määrän lisäys kiloina.",
-              "default_interval": 30}}
+              "Ferrosulfaatin määrän lisäys kiloina."}}
 
 
 def init_notification_intervals():

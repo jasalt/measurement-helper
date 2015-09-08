@@ -123,20 +123,20 @@ class SetupForm(Form):
 @login_required
 def setup():
     # Form fields are appended dynamically
+    class SetupForm(Form):
+        pass
+
+    for ni in get_notification_intervals():
+        setattr(SetupForm,
+                ni['type'],
+                IntegerField(entry_model[ni['type']]['finnish'],
+                             default=ni['interval_days']))
+    SetupForm.submit = SubmitField('Tallenna')
+
     form = SetupForm()
-    
     if request.method == 'POST' and form.validate():
         set_notification_intervals(dissoc(form.data, 'submit'))
         flash("Ilmoitusasetukset päivitetty!")
         return redirect(url_for('measurements.dashboard'))
 
-    nis = get_notification_intervals()
-    for ni in nis:
-        form.append_field(ni['type'],
-                          IntegerField(entry_model[ni['type']]['finnish'],
-                                       default=ni['interval_days']))
-    form.append_field('submit', SubmitField('Tallenna'))
-    form.process()
-
-    # import ipdb; ipdb.set_trace()
     return render_template('setup.html', form=form)
