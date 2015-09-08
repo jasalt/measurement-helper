@@ -22,11 +22,12 @@ Built with
 - [X] Serving on heroku
 - [ ] Backups
 - [ ] SSL
+- [ ] Secret token
 
-Code was written in quickly in few days and was not tested by design.
+Code was written in quickly in few days and was not tested by design. It wouldn't be convenient to build much bigger programs than this without automated testing facilities in place.
   
 * Environment setup
-Developed on Linux Mint 17.2.
+Tested on Linux Mint 17.2 (Ubuntu 14.04) and OSX 10.10 (homebrew python3).
 Using Heroku free plan for production. 
 
 Distribution provided prerequirements:
@@ -41,14 +42,17 @@ Some (optional) tooling provided by pip:
 =pip install virtualenv virtualenvwrapper=
 =mkvirtualenv -p /usr/bin/python3.4 measurement-helper=
 
+=mkvirtualenv= command activates the created virtual environment by default. Later it can be activated with =workon koodilehto-intra= 
+
 Install project dependencies =pip install -r requirements.txt=.
 
-Pip may throw permission error about ~/.cache/pip/ when installing. Fix by running =sudo chown -R USERNAME:USERNAME $HOME/.cache/pip=.
-** Initializing database and environment variables
-Initialize tables:
-=python server.py init_db=
+Pip may throw permission error about pip cache folder when installing. Fix by running =sudo chown -R <your username>:<your username> $HOME/.cache/pip= on Linux or =sudo chown -R <your username> $HOME/Library/Caches/pip= on OSX.
 
-Setup env vars:
+** Initializing database and environment variables
+Initialize tables =python server.py init_db=.
+Database can be cleared with command =python server.py drop_db= when necessary.
+
+Application defaults to password 'topsecret' and throws errors when running email notification checker if following variables are not set:
 
 #+BEGIN_SRC sh
 FLASK_APP_PASSWORD="somethingHard_to-guess"
@@ -58,7 +62,7 @@ FLASK_APP_EMAIL="bar@example.com"
 SERVER_ADDRESS = 'http://your-awesome-domain.net'
 #+END_SRC
 
-For heroku the command is =heroku config:set <VARIABLE_SETTING>=.
+For Heroku, config variables are set with command =heroku config:set <VARIABLE_SETTING>=.
 * Development server
 Command =python server.py dev= defaults to localhost:5000. Changing host and port for exposing server for external requests (might be dangerous if debugger is enabled) can be accomplished by running =python server.py dev -h 0.0.0.0 -p 80=.
 * Production server
@@ -70,7 +74,10 @@ With [[https://toolbelt.heroku.com/][Heroku Toolbelt]] installed and account con
 3) Add free PostgeSQL addon =heroku addons:create heroku-postgresql:hobby-dev= 
 4) Push local repository to Heroku =git push heroku master=
 5) Initialize database =heroku run python app/server.py init_db=
-6) Access application at =http://<application_name>.herokuapp.com=
+6) Setup environment variables from previous step
+7) Access application at =http://<application_name>.herokuapp.com=
+
+When continuing work on deployed Heroku app on other machine etc, skip steps 2-3 and instead set remote to existing Heroku git repository =heroku git:remote -a <application_name>=.
 
 Optionally setup cronjob somewhere to keep node running during daytime by adding following line to cron:
 
