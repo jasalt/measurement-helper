@@ -1,0 +1,23 @@
+.table tbody tr.silt_active_ml_per_l {
+  background-color: #CFBCAA !important;
+}
+
+.table tbody tr.silt_surplus_removal_l {
+  background-color: #B27D3C !important;
+}
+
+.table tbody tr.pump_usage_hours {
+  background-color: #A7A7A7 !important;
+}
+
+.table tbody tr.water_quality {
+  background-color: white !important;
+}
+
+.table tbody tr.ferrosulphate_level_percent {
+  background-color: #C6FCED !important;
+}
+
+.table tbody tr.ferrosulphate_addition_kg {
+  background-color: #73FCD6 !important;
+}

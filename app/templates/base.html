@@ -5,6 +5,7 @@
 {% block head %}
 {{ super() }}  <!-- Retain block content from parent -->
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css">
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 {% endblock %}
 

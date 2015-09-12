@@ -8,7 +8,7 @@
       <td>Arvo</td>
     </tr>
     % for entry in entries
-    <tr>
+    <tr class="{{entry.type}}">
       <td>
         <a href="{{ url_for('measurements.edit', id=entry.id) }}">
           <h4>{{g.entry_model[entry.type]['finnish']}}</h4></a>
