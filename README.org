@@ -70,7 +70,7 @@ Command =python server.py dev= defaults to localhost:5000. Changing host and por
 With [[https://toolbelt.heroku.com/][Heroku Toolbelt]] installed and account configured:
 
 1) Clone repository =git clone <repository url>=
-2) Create Heroku app =heroku app <application_name>=
+2) Create Heroku app =heroku create <application_name>=
 3) Add free PostgeSQL addon =heroku addons:create heroku-postgresql:hobby-dev= 
 4) Push local repository to Heroku =git push heroku master=
 5) Initialize database =heroku run python app/server.py init_db=
