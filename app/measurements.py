@@ -14,7 +14,8 @@ from toolz import dissoc, take
 
 from model import entry_model, add_measurement, read_measurements, \
     delete_measurement, get_measurement, update_measurement, read_date_str, \
-    get_notification_intervals, set_notification_intervals
+    get_notification_intervals, set_notification_intervals, \
+    read_last_measurements
 
 mod = Blueprint('measurements', __name__)
 
@@ -51,7 +52,7 @@ def dashboard():
     '''Default view with box for adding measurements and list of five last
     entries.'''
     # request.form.last_added
-    data = take(5, read_measurements()) or None
+    data = read_last_measurements() or None
     g.entry_model = entry_model
 
     form = MeasurementForm()
