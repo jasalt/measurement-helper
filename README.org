@@ -42,7 +42,7 @@ Some (optional) tooling provided by pip:
 =pip install virtualenv virtualenvwrapper=
 =mkvirtualenv -p /usr/bin/python3.4 measurement-helper=
 
-=mkvirtualenv= command activates the created virtual environment by default. Later it can be activated with =workon koodilehto-intra= 
+=mkvirtualenv= command activates the created virtual environment by default. Later it can be activated with =workon measurement-helper= 
 
 Install project dependencies =pip install -r requirements.txt=.
 
@@ -103,11 +103,11 @@ Notification script =python app/server.py check_notifications= can be scheduled 
 
 (didn't test this yet, but should work, maybe with minor fixing)
 ** Setup backups
-App serves CSV file of measurements via the /backup endpoint.
-This can be called via crontab (or anacron on desktop).
-Example rule for backing up every other week:
+App serves CSV file of measurements via the public /backup endpoint.
+This can easily be called by cron (or anacron on desktop).
+Example for backing up twice a month:
 
-1) Create directory for backups eg. /home/user/backups/measurements
+1) Create directory for backups eg. =mkdir -p /home/user/backups/measurements=
 2) Modify crontab by =crontab -e= and add rule 
 
 
