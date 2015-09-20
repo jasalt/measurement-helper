@@ -20,7 +20,7 @@ Built with
 - [X] [[https://github.com/lepture/flask-wtf][WTForms]] classes & validation for entries
 - [X] Schedule [[http://pythonhosted.org/Flask-Mail/][flask-mail]] notifications
 - [X] Serving on heroku
-- [ ] Backups
+- [X] Backups
 - [ ] SSL
 - [ ] Secret token
 
@@ -65,7 +65,7 @@ SERVER_ADDRESS = 'http://your-awesome-domain.net'
 For Heroku, config variables are set with command =heroku config:set <VARIABLE_SETTING>=.
 * Development server
 Command =python server.py dev= defaults to localhost:5000. Changing host and port for exposing server for external requests (might be dangerous if debugger is enabled) can be accomplished by running =python server.py dev -h 0.0.0.0 -p 80=.
-* Production server
+* Production setup
 ** Heroku node setup
 With [[https://toolbelt.heroku.com/][Heroku Toolbelt]] installed and account configured:
 
@@ -100,3 +100,18 @@ Heroku Scheduler can be used to send notifications on daily basis, but it *requi
 (didn't test this yet, but should work, maybe with minor fixing)
 *** Running script on other machine via cron / anacron
 Notification script =python app/server.py check_notifications= can be scheduled simply in cron or anacron. Machine should have environment variable DATABASE_URL set to application database. Heroku database url can be queried with =heroku config=.
+
+(didn't test this yet, but should work, maybe with minor fixing)
+** Setup backups
+App serves CSV file of measurements via the /backup endpoint.
+This can be called via crontab (or anacron on desktop).
+Example rule for backing up every other week:
+
+1) Create directory for backups eg. /home/user/backups/measurements
+2) Modify crontab by =crontab -e= and add rule 
+
+
+=0 0 1/16 * * cd /home/user/backups/measurements && wget --trust-server-names http://<app_name>.herokuapp.com/backup=
+
+
+Wget =--trust-server-names= option is required for keeping the timestamped filename. Resulting backup files are in form =measurement_backup_2015-09-20.csv=.
