@@ -211,6 +211,16 @@ class CheckNotifications(Command):
                 print('OK')
 
 
+def backup_db():
+    '''Backup measurement data as timestamped csv-file. Return filename.'''
+    table = get_table('measurements')
+    data = table.all()
+    day = date.today()
+    fname = 'measurement_backup_%s.csv' % day.strftime("%Y-%m-%d")
+    dataset.freeze(data, format='csv', filename='app/static/' + fname)
+    return fname
+
+
 class InitDb(Command):
     '''Set default notification intervals to DB.'''
     def run(self):
