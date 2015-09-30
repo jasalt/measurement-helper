@@ -1,7 +1,7 @@
 # CRUD operations for measurements.
 
 from flask import Blueprint, render_template, flash, request, redirect, \
-    url_for, g
+    url_for, g, current_app, send_from_directory
 from flask_wtf import Form
 from flask.ext.login import login_required
 
@@ -10,11 +10,12 @@ from wtforms import TextField, SubmitField, SelectField, ValidationError, \
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired
 from datetime import date
-from toolz import dissoc, take
+from toolz import dissoc
 
 from model import entry_model, add_measurement, read_measurements, \
     delete_measurement, get_measurement, update_measurement, read_date_str, \
-    get_notification_intervals, set_notification_intervals
+    get_notification_intervals, set_notification_intervals, \
+    read_last_measurements, backup_db
 
 mod = Blueprint('measurements', __name__)
 
@@ -51,7 +52,7 @@ def dashboard():
     '''Default view with box for adding measurements and list of five last
     entries.'''
     # request.form.last_added
-    data = take(5, read_measurements()) or None
+    data = read_last_measurements() or None
     g.entry_model = entry_model
 
     form = MeasurementForm()
@@ -145,3 +146,9 @@ def setup():
         return redirect(url_for('measurements.dashboard'))
 
     return render_template('setup.html', form=form)
+
+
+@mod.route('/backup')
+def backup():
+    backup_file = backup_db()
+    return redirect(url_for('static', filename=backup_file))

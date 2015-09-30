@@ -133,6 +133,21 @@ def read_measurements():
     return all_sorted
 
 
+def filter_first_of_type(entries, wanted_type):
+    return first([entry for entry in entries if entry['type'] == wanted_type]) or None
+
+
+def read_last_measurements():
+    '''Return last measurement of each type.'''
+    measurements = get_table('measurements')
+    all = [a for a in measurements.all()]
+    all_sorted = sorted(all, key=itemgetter('date', 'id'), reverse=True)
+    firsts = map(lambda entry_type: filter_first_of_type(all_sorted,
+                                                         entry_type),
+                 entry_model.keys())
+    return firsts
+
+
 def get_measurement(id):
     measurements = get_table('measurements')
     return measurements.find_one(id=id)
@@ -194,6 +209,16 @@ class CheckNotifications(Command):
                                    str(diff.days), server_address))
             else:
                 print('OK')
+
+
+def backup_db():
+    '''Backup measurement data as timestamped csv-file. Return filename.'''
+    table = get_table('measurements')
+    data = table.all()
+    day = date.today()
+    fname = 'measurement_backup_%s.csv' % day.strftime("%Y-%m-%d")
+    dataset.freeze(data, format='csv', filename='app/static/' + fname)
+    return fname
 
 
 class InitDb(Command):
