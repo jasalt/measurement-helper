@@ -1,15 +1,22 @@
 # Main initialization file
 
-from flask import Flask
+from flask import Flask, Blueprint
 from flask.ext.script import Manager, Server
 from flask.ext.bootstrap import Bootstrap
 from model import CheckNotifications, InitDb, DropDb
+import chartkick
 
 import authentication
 import measurements
 
 app = Flask(__name__)
 app.jinja_env.line_statement_prefix = '%'
+
+# Chartkick initialization
+ck = Blueprint('ck_page', __name__, static_folder=chartkick.js(),
+               static_url_path='/static')
+app.register_blueprint(ck, url_prefix='/ck')
+app.jinja_env.add_extension("chartkick.ext.charts")
 
 Bootstrap(app)
 

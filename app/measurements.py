@@ -96,11 +96,16 @@ def history():
     '''List all measurements from db'''
     data = read_measurements()
     g.entry_model = entry_model
-
+    
     if not data:
         flash("Tietokanta on tyhjä!")
         return redirect(url_for('measurements.dashboard'))
-    return render_template('history.html', measurements=data)
+    
+    graph_data = [[x['date'], x['value']]
+                  for x in data if x['type'] == 'silt_active_ml_per_l']
+    
+    return render_template('history.html',
+                           measurements=data, graph_data=graph_data)
 
 
 @mod.route('/delete/<id>')

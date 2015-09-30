@@ -1,9 +1,22 @@
 % extends "base.html"
 % import "components.html" as components
 
+% block head
+{{ super() }}
+<script src="{{ url_for('static', filename='jquery-1.8.3.min.js') }}"></script>
+<script src="{{ url_for('static', filename='highcharts.js') }}"></script>
+<script src="{{ url_for('ck_page.static', filename='chartkick.js') }}"></script>
+% endblock
+
 % block page_content
 
 <h3>Mittaushistoria</h3>
+
+<div class="well well-sm">
+    <h4>Aktiivilietteen taso</h4>
+    {% line_chart graph_data %}
+</div>
+
 {{ components.entry_list(measurements) }}
 
 
