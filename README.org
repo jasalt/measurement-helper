@@ -1,7 +1,8 @@
  2023/09 updated package versions and made it run with Python 3.11 and Flask 2.0. Email functionality not tested.
 
 * Measurement Helper
-Simplistic web application to help doing repeated measurements. Designed to be hosted for free on [[https://www.heroku.com/][Heroku]]. UI texts are in Finnish, source code in English. Consider it *public domain*, no warranties provided.
+Application prototype helps tracking dairy farm's biological/chemical waste water cleaning system's health and provides email notifications for doing repeated manual measurements.
+Cleaning system used is Atomar Oy "Milkilo" http://web.archive.org/web/20180828210118/http://atomar.fi/panospuhdistamo.html.
 
 - Password protected Web UI for logging/viewing data
 - Email notifications with configurable alert intervals for different measurement types
@@ -17,6 +18,35 @@ Built with
 
 #+NAME: UI screenshot
 [[https://github.com/jasalt/measurement-helper/blob/3d5003f771a9c8457bb5e286143dccbcf37f5f23/UI-demo.png]]
+
+Different measurement types are defined in `model.py` with ranges that are validated by UI.
+
+#+BEGIN_SRC python
+entry_model = \
+            {"silt_active_ml_per_l":
+             {"finnish": "Aktiivilietemittaus", "min": 0, "max": 1000,
+              "description": "aktiivilietteen mittaus (ml per litra)",
+              "default_interval": 14},
+             "silt_surplus_removal_l":
+             {"finnish": "Poistopumppaus", "min": 1, "max": 1000,
+              "description": "ylijäämälietteen poistomäärä litroina"},
+             "pump_usage_hours":
+             {"finnish": "Pumpun käyttötunnit", "min": 1, "max": 9999999,
+              "description": "pumpun käyttötuntilaskurin lukema"},
+             "water_quality":
+             {"finnish": "Kirkasvesinäyte", "min": 1, "max": 5,
+              "description":
+              "kirkasveden laatu asteikolla 1-5 (1 on parhain)"},
+             "ferrosulphate_level_percent":
+             {"finnish": "Ferrosulfaatin määrä", "min": 0, "max": 100,
+              "description": "ferrosulfaatin määrä sentteinä",
+              "default_interval": 14},
+             "ferrosulphate_addition_kg":
+             {"finnish": "Ferrosulfaatin lisäys", "min": 1, "max": 1000,
+              "description":
+              "Ferrosulfaatin määrän lisäys kiloina."}}
+#+END_SRC
+ 
 
 ** To Do
 - [X] +User auth by env token, [[http://flask-sqlalchemy.pocoo.org/2.0/quickstart/][flask-login]]
