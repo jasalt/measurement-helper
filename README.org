@@ -15,7 +15,8 @@ Built with
 - [[https://dataset.readthedocs.org/][Python Dataset]] SQL Database wrapper (tested on SQLite and PostgreSQL)
 - [[https://mailgun.com/][Mailgun]] for sending emails
 
-![UI screenshot](https://github.com/jasalt/measurement-helper/blob/master/UI-demo.png?raw=true)
+#+NAME: UI screenshot
+[[https://github.com/jasalt/measurement-helper/blob/3d5003f771a9c8457bb5e286143dccbcf37f5f23/UI-demo.png]]
 
 ** To Do
 - [X] +User auth by env token, [[http://flask-sqlalchemy.pocoo.org/2.0/quickstart/][flask-login]]
