@@ -3,9 +3,9 @@
 from flask import Blueprint, render_template, flash, request, redirect, \
     url_for, g, current_app, send_from_directory
 from flask_wtf import Form
-from flask.ext.login import login_required
+from flask_login import login_required
 
-from wtforms import TextField, SubmitField, SelectField, ValidationError, \
+from wtforms import StringField, SubmitField, SelectField, ValidationError, \
     IntegerField
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired
@@ -41,7 +41,7 @@ class MeasurementForm(Form):
     date = DateField('Päiväys (muotoa. 12-20-2015)', default=date.today())
     value = IntegerField('Mittausarvo', validators=[DataRequired(),
                                                     value_validation])
-    comment = TextField('Valinnainen kommentti')
+    comment = StringField('Valinnainen kommentti')
     submit = SubmitField('Lähetä')
 
 
@@ -97,14 +97,14 @@ def history():
     '''List all measurements from db'''
     data = read_measurements()
     g.entry_model = entry_model
-    
+
     if not data:
         flash("Tietokanta on tyhjä!")
         return redirect(url_for('measurements.dashboard'))
-    
-    graph_data = [[x['date'], x['value']]
+
+    graph_data = [[x['date'].strftime("%Y-%m-%d"), x['value']]
                   for x in data if x['type'] == 'silt_active_ml_per_l']
-    
+
     return render_template('history.html',
                            measurements=data, graph_data=graph_data)
 

@@ -1,8 +1,8 @@
 # Main initialization file
 
 from flask import Flask, Blueprint
-from flask.ext.script import Manager, Server
-from flask.ext.bootstrap import Bootstrap
+from flask_script import Manager, Server
+from flask_bootstrap import Bootstrap
 from model import CheckNotifications, InitDb, DropDb
 import chartkick
 

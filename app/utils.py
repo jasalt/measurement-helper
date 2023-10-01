@@ -30,7 +30,7 @@ class DoTo(object):
 
 def read_date_str(timestr):
     '''Read date string that's stored in database'''
-    st = strptime(timestr, "%Y-%m-%d")
+    st = strptime(str(timestr), "%Y-%m-%d")
     return date.fromtimestamp(mktime(st))
 
 

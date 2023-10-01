@@ -4,7 +4,7 @@ import os
 from operator import itemgetter
 from datetime import date
 from time import strptime, mktime
-from flask.ext.script import Command, prompt_bool
+from flask_script import Command, prompt_bool
 from utils import send_mail, read_date_str
 import csv
 from toolz.curried import dissoc, first, second

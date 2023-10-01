@@ -1,3 +1,5 @@
+ 2023/09 updated package versions and made it run with Python 3.11 and Flask 2.0. Email functionality not tested.
+
 * Measurement Helper
 Simplistic web application to help doing repeated measurements. Designed to be hosted for free on [[https://www.heroku.com/][Heroku]]. UI texts are in Finnish, source code in English. Consider it *public domain*, no warranties provided.
 
@@ -27,26 +29,19 @@ Built with
 Code was written in quickly in few days and was not tested by design. It wouldn't be convenient to build much bigger programs than this without automated testing facilities in place.
   
 * Environment setup
-Tested on Linux Mint 17.2 (Ubuntu 14.04) and OSX 10.10 (homebrew python3).
-Using Heroku free plan for production. 
+*
 
-Distribution provided prerequirements:
-- Python 3.4 with development package
+
+Originally developed on Ubuntu 14.04 and OSX 10.10, Python 3.4. Following notes were written back then..
+
+
+Distribution provided pre-requirements:
+- Python with development package
 - PostgreSQL development package libpq-dev
-- [[https://en.wikipedia.org/wiki/Pip_(package_manager)][pip]] package manager
 =sudo apt-get install python3-pip python3-dev libpq-dev=
-
-Some (optional) tooling provided by pip:
-- [[http://docs.python-guide.org/en/latest/dev/virtualenvs/][virtualenv]] Python project dependency isolation tool
-- [[https://virtualenvwrapper.readthedocs.org/en/latest/][virtualenvwrapper]] virtualenv helper (supported by [[https://www.gnu.org/software/emacs/][Emacs]] [[https://github.com/jorgenschaefer/elpy/wiki][ELPY Python IDE]])
-=pip install virtualenv virtualenvwrapper=
-=mkvirtualenv -p /usr/bin/python3.4 measurement-helper=
-
-=mkvirtualenv= command activates the created virtual environment by default. Later it can be activated with =workon measurement-helper= 
 
 Install project dependencies =pip install -r requirements.txt=.
 
-Pip may throw permission error about pip cache folder when installing. Fix by running =sudo chown -R <your username>:<your username> $HOME/.cache/pip= on Linux or =sudo chown -R <your username> $HOME/Library/Caches/pip= on OSX.
 
 ** Initializing database and environment variables
 Initialize tables =python server.py init_db=.
@@ -56,16 +51,19 @@ Application defaults to password 'topsecret' and throws errors when running emai
 
 #+BEGIN_SRC sh
 FLASK_APP_PASSWORD="somethingHard_to-guess"
-MAILGUN_KEY = 'key-xxxblablaetcxxx'
+MAILGUN_KEY='key-xxxblablaetcxxx'
 ADMIN_EMAIL="foo@example.com"
 FLASK_APP_EMAIL="bar@example.com"
-SERVER_ADDRESS = 'http://your-awesome-domain.net'
+SERVER_ADDRESS='http://your-awesome-domain.net'
 #+END_SRC
 
-For Heroku, config variables are set with command =heroku config:set <VARIABLE_SETTING>=.
 * Development server
 Command =python server.py dev= defaults to localhost:5000. Changing host and port for exposing server for external requests (might be dangerous if debugger is enabled) can be accomplished by running =python server.py dev -h 0.0.0.0 -p 80=.
+
 * Production setup
+
+Heroku +free plan+ was used for hosting but free plan got removed after 2022, should use Fly.io instead.
+
 ** Heroku node setup
 With [[https://toolbelt.heroku.com/][Heroku Toolbelt]] installed and account configured:
 
@@ -75,6 +73,7 @@ With [[https://toolbelt.heroku.com/][Heroku Toolbelt]] installed and account con
 4) Push local repository to Heroku =git push heroku master=
 5) Initialize database =heroku run python app/server.py init_db=
 6) Setup environment variables from previous step
+  - For Heroku, config variables are set with command =heroku config:set <VARIABLE_SETTING>=.
 7) Access application at =http://<application_name>.herokuapp.com=
 
 When continuing work on deployed Heroku app on other machine etc, skip steps 2-3 and instead set remote to existing Heroku git repository =heroku git:remote -a <application_name>=.

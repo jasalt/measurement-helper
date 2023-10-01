@@ -1,5 +1,5 @@
 __pycache__/
 /app/secret.py
-/app/measurements.db
-/app/database.db
+/app/measurements.db*
+/app/database.db*
 /database.db
