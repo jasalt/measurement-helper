@@ -15,6 +15,8 @@ Built with
 - [[https://dataset.readthedocs.org/][Python Dataset]] SQL Database wrapper (tested on SQLite and PostgreSQL)
 - [[https://mailgun.com/][Mailgun]] for sending emails
 
+![UI screenshot](https://github.com/jasalt/measurement-helper/blob/master/UI-demo.png?raw=true)
+
 ** To Do
 - [X] +User auth by env token, [[http://flask-sqlalchemy.pocoo.org/2.0/quickstart/][flask-login]]
 - [X] [[https://dataset.readthedocs.org/en/latest/][Dataset]] and sqlite
@@ -29,7 +31,6 @@ Built with
 Code was written in quickly in few days and was not tested by design. It wouldn't be convenient to build much bigger programs than this without automated testing facilities in place.
   
 * Environment setup
-*
 
 
 Originally developed on Ubuntu 14.04 and OSX 10.10, Python 3.4. Following notes were written back then..
